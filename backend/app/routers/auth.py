@@ -2,7 +2,7 @@ from app.models import User
 from app.security import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse
 from app.db import get_session
-from app.queries import GET_USER_BY_EMAIL
+from app.queries import GET_USER_BY_EMAIL, INSERT_USER
 
 from datetime import timedelta
 
@@ -13,30 +13,34 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 def register_user(user: UserRegister, session: Session = Depends(get_session)):
-    # Check if user already exists
+    """Register a new user using email and password."""
+
     result = session.exec(GET_USER_BY_EMAIL, {"email": user.email})
     existing_user = result.first()
 
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    user = User(
-        email = user.email,
-        password_hash = hash_password(user.password)   
+    password_hash = hash_password(user.password)
+    result = session.exec(
+        INSERT_USER,
+        {"email": user.email, "password_hash": password_hash}
     )
-
-    session.add(user)
     session.commit()
-    session.refresh(user)
 
-    return UserRead(
-        id=user.id,
-        email=user.email,
-        created_at=user.created_at
+    result = session.exec(GET_USER_BY_EMAIL, {"email": user.email})
+    row = result.first()
+    new_user = User(
+        id=row.id,
+        email=row.email,
+        created_at=row.created_at
     )
+    return new_user
+
 
 @router.post("/login", response_model=TokenResponse)
 def login_user(login_req: LoginRequest, session: Session = Depends(get_session)):
+    """Authenticate user and return access token."""
     
     result = session.exec(GET_USER_BY_EMAIL, {"email": login_req.email})
     user = result.first()
