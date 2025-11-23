@@ -4,7 +4,7 @@ from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse
 from app.db import get_session
 from app.queries import GET_USER_BY_EMAIL, INSERT_USER
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 from sqlmodel import Session
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 def register_user(user: UserRegister, session: Session = Depends(get_session)):
     """Register a new user using email and password."""
 
-    result = session.exec(GET_USER_BY_EMAIL, {"email": user.email})
+    result = session.exec(GET_USER_BY_EMAIL.params({"email": user.email}))
     existing_user = result.first()
 
     if existing_user:
@@ -23,12 +23,16 @@ def register_user(user: UserRegister, session: Session = Depends(get_session)):
 
     password_hash = hash_password(user.password)
     result = session.exec(
-        INSERT_USER,
-        {"email": user.email, "password_hash": password_hash}
+        INSERT_USER.params(
+            {
+                "email": user.email, 
+                "password_hash": password_hash,
+                "created_at": datetime.utcnow()
+            })
     )
     session.commit()
 
-    result = session.exec(GET_USER_BY_EMAIL, {"email": user.email})
+    result = session.exec(GET_USER_BY_EMAIL.params({"email": user.email}))
     row = result.first()
     new_user = User(
         id=row.id,
@@ -42,7 +46,7 @@ def register_user(user: UserRegister, session: Session = Depends(get_session)):
 def login_user(login_req: LoginRequest, session: Session = Depends(get_session)):
     """Authenticate user and return access token."""
     
-    result = session.exec(GET_USER_BY_EMAIL, {"email": login_req.email})
+    result = session.exec(GET_USER_BY_EMAIL.params({"email": login_req.email}))
     user = result.first()
     
     if not user:
