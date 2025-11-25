@@ -2,11 +2,13 @@ from fastapi import FastAPI
 from app.db import init_db
 from app.routers.auth import router as auth_router
 from app.routers.apps import router as apps_router
+from app.core.settings import settings
 
 app = FastAPI(title="Sentry Lite")
 
 @app.on_event("startup")
 def on_startup():
+    app.state.settings = settings
     init_db()
 
 @app.get("/")

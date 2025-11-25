@@ -1,8 +1,9 @@
 from app.models import User
-from app.security import hash_password, verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.security import hash_password, verify_password, create_access_token
 from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse
 from app.db import get_session
 from app.queries import GET_USER_BY_EMAIL, INSERT_USER
+from app.core.settings import settings
 
 from datetime import timedelta, datetime
 
@@ -55,9 +56,9 @@ def login_user(login_req: LoginRequest, session: Session = Depends(get_session))
     if not verify_password(login_req.password, user.password_hash):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid email or password.")
     
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": str(user.id), "email": user.email},
+        data={"sub": {"user_id": user.id, "email": user.email}},
         expires_delta=access_token_expires
     )
 

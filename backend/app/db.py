@@ -1,11 +1,9 @@
 from sqlmodel import SQLModel, create_engine, Session
-
-DB_FILE = "db/sentry_lite.db"
-DATABASE_URL = f"sqlite:///{DB_FILE}"
+from app.core.settings import settings
 
 # Create engine
 engine = create_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     echo=True,  
     connect_args={"check_same_thread": False}
 )
