@@ -8,6 +8,8 @@ from app.schemas import AppCreate, AppRead
 from app.db import get_session
 from app.queries import GET_APPS, GET_APP_BY_SLUG, INSERT_APP
 
+
+
 router = APIRouter(prefix="/apps", tags=["apps"])
 
 @router.get("/", response_model=List[AppRead], status_code=status.HTTP_200_OK)

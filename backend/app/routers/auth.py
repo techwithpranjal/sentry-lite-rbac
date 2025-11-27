@@ -10,6 +10,8 @@ from datetime import timedelta, datetime
 from sqlmodel import Session
 from fastapi import APIRouter, Depends, HTTPException, status
 
+
+
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)

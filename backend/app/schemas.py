@@ -40,6 +40,21 @@ class AppRead(BaseModel):
     poc_user_id: int
     created_at: datetime
 
+# ---- Role schemas ----
+
+class RoleCreate(BaseModel):
+    app_id: int
+    name: str
+    description: str
+
+class RoleRead(BaseModel):
+    id: int
+    app_id: int
+    name: str
+    description: str
+    created_at: datetime
+    
+
 
 
 
