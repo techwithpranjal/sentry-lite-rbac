@@ -11,7 +11,6 @@ from sqlmodel import Session
 from fastapi import APIRouter, Depends, HTTPException, status
 
 
-
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
@@ -59,9 +58,13 @@ def login_user(login_req: LoginRequest, session: Session = Depends(get_session))
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid email or password.")
     
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    
     access_token = create_access_token(
-        data={"sub": {"user_id": user.id, "email": user.email}},
-        expires_delta=access_token_expires
+        data={
+            "id": str(user.id),       
+            "email": user.email        
+        },
+        expires_delta=access_token_expires,
     )
 
     return TokenResponse(access_token=access_token)

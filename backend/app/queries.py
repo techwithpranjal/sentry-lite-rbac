@@ -44,3 +44,25 @@ INSERT_ROLE = text("""
     VALUES (:app_id, :name, :description, :created_at)
 """)
 
+GET_ROLE_BY_ID = text("""
+    SELECT * FROM role WHERE id = :role_id 
+""")
+
+# Membership Queries
+
+GET_MEMBERSHIPS_BY_ROLE_ID = text("""
+    SELECT id, role_id, app_id, user_id, created_at FROM membership WHERE role_id = :role_id ORDER BY created_at DESC
+""")
+
+INSERT_MEMBERSHIP = text("""
+    INSERT INTO membership (user_id, app_id, role_id, created_at)
+    VALUES (:user_id, :app_id, :role_id, :created_at)
+""")
+
+GET_MEMBERSHIP_BY_USER_ID_AND_ROLE_ID = text("""
+    SELECT * FROM membership WHERE user_id = :user_id AND role_id = :role_id
+""")
+
+GET_MEMBERSHIPS_BY_USER_ID = text("""
+    SELECT id, role_id, app_id, user_id, created_at FROM membership WHERE user_id = :user_id ORDER BY created_at DESC
+""")

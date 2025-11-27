@@ -32,15 +32,15 @@ def get_logged_user(token: str) -> Optional[dict]:
     """Extract user information from JWT token in request headers."""
 
     try:
-        payload = jwt.decode(token, 
+        user_data = jwt.decode(token, 
                              settings.JWT_SECRET_KEY, 
                              algorithms=[settings.JWT_ALGORITHM])
-        user_data = payload.get("sub")
+
         if user_data is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
         
-        return {"user": user_data}
+        return {"sub": user_data}
         
-    except JWTError:
+    except JWTError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
     

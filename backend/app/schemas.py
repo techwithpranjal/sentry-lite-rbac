@@ -53,6 +53,20 @@ class RoleRead(BaseModel):
     name: str
     description: str
     created_at: datetime
+
+# ---- Membership schemas ----
+
+class MembershipCreate(BaseModel):
+    user_id: int
+    app_id: int
+    role_id: int
+
+class MembershipRead(BaseModel):
+    id: int
+    user_id: int
+    app_id: int
+    role_id: int
+    created_at: datetime
     
 
 
