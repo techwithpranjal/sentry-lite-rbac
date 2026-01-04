@@ -4,6 +4,7 @@ from app.routers.auth import router as auth_router
 from app.routers.apps import router as apps_router
 from app.routers.roles import router as roles_router
 from app.routers.memberships import router as memberships_router
+from app.routers.requests import router as requests_router
 from app.core.settings import settings
 
 app = FastAPI(title="Sentry Lite")
@@ -21,5 +22,6 @@ app.include_router(auth_router)
 app.include_router(apps_router)
 app.include_router(roles_router)
 app.include_router(memberships_router)
+app.include_router(requests_router)
   
     

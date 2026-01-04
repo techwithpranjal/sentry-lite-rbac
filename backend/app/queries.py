@@ -10,6 +10,7 @@ INSERT_USER = text("""
     INSERT INTO user (email, password_hash, created_at) VALUES (:email, :password_hash, :created_at)
 """)
 
+
 # App Queries
 
 GET_APPS = text("""
@@ -27,6 +28,10 @@ GET_APP_BY_SLUG = text("""
 INSERT_APP = text("""
     INSERT INTO app (name, slug, description, poc_user_id, created_at)
     VALUES (:name, :slug, :description, :poc_user_id, :created_at)
+""")
+
+GET_OWNED_APPS_BY_USER_ID = text("""
+    SELECT id, name, slug, description, poc_user_id, created_at FROM app WHERE poc_user_id = :user_id ORDER BY created_at DESC
 """)
 
 # Role Queries
@@ -66,3 +71,37 @@ GET_MEMBERSHIP_BY_USER_ID_AND_ROLE_ID = text("""
 GET_MEMBERSHIPS_BY_USER_ID = text("""
     SELECT id, role_id, app_id, user_id, created_at FROM membership WHERE user_id = :user_id ORDER BY created_at DESC
 """)
+
+# Request Queries
+
+GET_REQUEST_BY_USER_ID_AND_ROLE_ID = text("""
+    SELECT * FROM request WHERE user_id = :user_id AND role_id = :role_id
+""")
+
+INSERT_REQUEST = text("""
+    INSERT INTO request (user_id, app_id, role_id, justification, status, created_at)
+    VALUES (:user_id, :app_id, :role_id, :justification, 'pending', :created_at)
+""")
+
+GET_REQUESTS_BY_USER_ID = text("""
+    SELECT id, user_id, app_id, role_id, justification, status, created_at, updated_by, updated_at
+    FROM request WHERE user_id = :user_id ORDER BY created_at DESC
+""")
+
+GET_REQUESTS_BY_REQUEST_ID = text("""
+    SELECT * FROM request WHERE id = :request_id
+""")
+
+GET_REQUESTS_BY_POC = text("""
+    SELECT r.id, r.user_id, r.app_id, r.role_id, r.justification, r.status, r.created_at, r.updated_by, r.updated_at
+    FROM request r
+    JOIN app a ON r.app_id = a.id
+    WHERE a.poc_user_id = :poc_user_id
+    ORDER BY r.created_at DESC
+""")
+
+UPDATE_REQUEST_STATUS = text("""
+    UPDATE request SET status = :status, updated_by = :updated_by, updated_at = :updated_at
+    WHERE id = :request_id
+""")
+

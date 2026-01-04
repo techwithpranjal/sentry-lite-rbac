@@ -1,8 +1,8 @@
 from app.models import User
-from app.core.security import hash_password, verify_password, create_access_token
-from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse
+from app.core.security import hash_password, verify_password, create_access_token, get_logged_user
+from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse, IdentityRead
 from app.db import get_session
-from app.queries import GET_USER_BY_EMAIL, INSERT_USER
+from app.queries import GET_USER_BY_EMAIL, INSERT_USER, GET_OWNED_APPS_BY_USER_ID, GET_MEMBERSHIPS_BY_USER_ID, GET_REQUESTS_BY_USER_ID
 from app.core.settings import settings
 
 from datetime import timedelta, datetime
@@ -70,4 +70,70 @@ def login_user(login_req: LoginRequest, session: Session = Depends(get_session))
     return TokenResponse(access_token=access_token)
 
 
-  
+@router.post("/identity", response_model=IdentityRead, status_code=status.HTTP_200_OK)
+def get_identity(session: Session = Depends(get_session) ,current_user: dict = Depends(get_logged_user)):
+    """Aggregated identity endpoint.
+    Returns user info, owned apps, memberships, and pending requests.
+    """
+
+    user_data = {
+        "id": current_user["id"],
+        "email": current_user["email"]
+    }
+
+    owned_apps_result = session.exec(
+        GET_OWNED_APPS_BY_USER_ID.params({"user_id": current_user["id"]})
+    ).fetchall()
+    
+    owned_apps = [
+        {
+            "id": app.id,
+            "name": app.name,
+            "slug": app.slug,
+            "description": app.description,
+            "poc_user_id": app.poc_user_id,
+            "created_at": app.created_at
+        }
+        for app in owned_apps_result
+    ]
+
+    memberships_results = session.exec(
+        GET_MEMBERSHIPS_BY_USER_ID.params({"user_id": current_user["id"]})
+    ).fetchall()
+
+    memberships = [
+        {
+            "id": membership.id,
+            "role_id": membership.role_id,
+            "app_id": membership.app_id,
+            "user_id": membership.user_id,
+            "created_at": membership.created_at
+        }
+        for membership in memberships_results
+    ]
+
+    requests_result = session.exec(
+        GET_REQUESTS_BY_USER_ID.params({"user_id": current_user["id"]})
+    ).fetchall()
+
+    requests = [
+        {
+            "id": req.id,
+            "user_id": req.user_id,
+            "app_id": req.app_id,
+            "role_id": req.role_id,
+            "justification": req.justification,
+            "status": req.status,
+            "created_at": req.created_at
+        }
+        for req in requests_result
+    ]
+
+    return IdentityRead(
+        user=user_data,
+        owned_apps=owned_apps,
+        memberships=memberships,
+        requests=requests
+    )
+
+

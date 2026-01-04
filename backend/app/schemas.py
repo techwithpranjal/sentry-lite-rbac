@@ -24,13 +24,18 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
+class IdentityRead(BaseModel):
+    user: list
+    owned_apps: list
+    memberships: list
+    requests: list
+
 # ---- App schemas ----
 
 class AppCreate(BaseModel):
     name: str
     slug: str
     description: str
-    poc_user_id: int
 
 class AppRead(BaseModel):
     id: int
@@ -68,6 +73,27 @@ class MembershipRead(BaseModel):
     role_id: int
     created_at: datetime
     
+# ---- Request schemas ----
+
+class RequestCreate(BaseModel):
+    app_id: int
+    role_id: int
+    justification: Optional[str] = None
+
+class RequestRead(BaseModel):
+    id: int
+    user_id: int
+    app_id: int
+    role_id: int
+    justification: Optional[str] = None
+    status: str
+    created_at: datetime
+    updated_by: Optional[int] = None
+    updated_at: Optional[datetime] = None
+
+class RequestUpdate(BaseModel):
+    request_id: int
+    status: str
 
 
 
