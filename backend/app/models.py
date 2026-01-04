@@ -35,7 +35,7 @@ class Membership(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class MembershipRequest(SQLModel, table=True):
+class Request(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
     app_id: int = Field(foreign_key="app.id")

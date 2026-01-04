@@ -25,7 +25,7 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 class IdentityRead(BaseModel):
-    user: list
+    user: dict
     owned_apps: list
     memberships: list
     requests: list

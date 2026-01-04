@@ -77,12 +77,12 @@ def get_identity(session: Session = Depends(get_session) ,current_user: dict = D
     """
 
     user_data = {
-        "id": current_user["id"],
-        "email": current_user["email"]
+        "id": current_user["sub"]["id"],
+        "email": current_user["sub"]["email"]
     }
 
     owned_apps_result = session.exec(
-        GET_OWNED_APPS_BY_USER_ID.params({"user_id": current_user["id"]})
+        GET_OWNED_APPS_BY_USER_ID.params({"user_id": current_user["sub"]["id"]})
     ).fetchall()
     
     owned_apps = [
@@ -98,7 +98,7 @@ def get_identity(session: Session = Depends(get_session) ,current_user: dict = D
     ]
 
     memberships_results = session.exec(
-        GET_MEMBERSHIPS_BY_USER_ID.params({"user_id": current_user["id"]})
+        GET_MEMBERSHIPS_BY_USER_ID.params({"user_id": current_user["sub"]["id"]})
     ).fetchall()
 
     memberships = [
@@ -113,7 +113,7 @@ def get_identity(session: Session = Depends(get_session) ,current_user: dict = D
     ]
 
     requests_result = session.exec(
-        GET_REQUESTS_BY_USER_ID.params({"user_id": current_user["id"]})
+        GET_REQUESTS_BY_USER_ID.params({"user_id": current_user["sub"]["id"]})
     ).fetchall()
 
     requests = [
