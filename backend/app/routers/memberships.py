@@ -7,7 +7,7 @@ from sqlmodel import Session
 from app.models import User
 from app.schemas import MembershipCreate, MembershipRead
 from app.queries import GET_MEMBERSHIPS_BY_ROLE_ID, GET_ROLE_BY_ID, INSERT_MEMBERSHIP, GET_MEMBERSHIP_BY_USER_ID_AND_ROLE_ID, GET_MEMBERSHIPS_BY_USER_ID
-from app.db import get_session
+from app.db.db import get_session
 from app.core.security import get_logged_user
 
 

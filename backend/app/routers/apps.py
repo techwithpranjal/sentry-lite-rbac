@@ -6,7 +6,7 @@ from sqlmodel import Session
 
 from app.schemas import AppCreate, AppRead
 from app.queries import GET_APPS, GET_APP_BY_SLUG, INSERT_APP
-from app.db import get_session
+from app.db.db import get_session
 from app.core.security import get_logged_user
 
 

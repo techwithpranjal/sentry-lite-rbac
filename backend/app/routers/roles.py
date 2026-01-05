@@ -5,7 +5,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from sqlmodel import Session
 
 from app.schemas import RoleRead, RoleCreate
-from app.db import get_session
+from app.db.db import get_session
 from app.queries import GET_ROLES_BY_APP_ID, GET_ROLE_BY_NAME_AND_APP_ID, GET_APP_BY_APP_ID, INSERT_ROLE
 
 

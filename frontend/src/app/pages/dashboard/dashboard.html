@@ -1,6 +1,33 @@
 <div class="space-y-6">
   <h1 class="text-2xl font-semibold text-zinc-100">Dashboard</h1>
 
+  <!-- Quick Actions -->
+  <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+    <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">Quick Actions</h2>
+
+    <div class="flex flex-wrap gap-3">
+      <button
+        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
+      >
+        Request Access
+      </button>
+
+      <button
+        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
+        *ngIf="identity?.owned_apps?.length > 0"
+      >
+        Create Role
+      </button>
+
+      <button
+        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
+        *ngIf="identity?.owned_apps?.length > 0"
+      >
+        Manage Members
+      </button>
+    </div>
+  </div>
+
   <div class="space-y-8">
     <h1 class="text-2xl font-semibold text-zinc-100">Identity</h1>
 
@@ -12,11 +39,16 @@
 
     <!-- Identity Data -->
     <div *ngIf="identity" class="space-y-6">
+      <p class="text-zinc-400 text-sm mt-1">
+        {{ identity.memberships.length }} memberships · {{ identity.owned_apps.length }} owned apps
+        · {{ identity.requests.length }} requests
+      </p>
+
       <!-- User Info -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
         <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-2">User</h2>
         <p class="text-zinc-100">
-          {{ identity.email }}
+          {{ identity.user.email }}
         </p>
       </div>
 
@@ -31,10 +63,61 @@
         <ul class="space-y-2">
           <li
             *ngFor="let m of identity.memberships"
+            class="flex justify-between items-center text-sm"
+          >
+            <span class="text-zinc-300"> App {{ m.app_id }} </span>
+
+            <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-xs">
+              Role {{ m.role_id }}
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <!--Owned Apps-->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+        <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">Owned Apps</h2>
+
+        <div *ngIf="identity.owned_apps?.length === 0" class="text-zinc-500">
+          No owned applications
+        </div>
+
+        <ul class="space-y-2">
+          <li
+            *ngFor="let app of identity.owned_apps"
+            class="flex justify-between items-center text-sm"
+          >
+            <span class="text-zinc-200 font-medium">
+              {{ app.name }}
+            </span>
+
+            <span class="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-xs"> Owner </span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Requests -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+        <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">Requests</h2>
+
+        <div *ngIf="identity.requests?.length === 0" class="text-zinc-500">No requests found</div>
+
+        <ul class="space-y-2">
+          <li
+            *ngFor="let r of identity.requests"
             class="flex justify-between text-sm text-zinc-300"
           >
-            <span>{{ m.app }}</span>
-            <span class="text-cyan-400">{{ m.role }}</span>
+            <span>{{ r.app }}</span>
+            <span
+              class="px-2 py-0.5 rounded text-xs"
+              [ngClass]="{
+                'bg-yellow-500/10 text-yellow-400': r.status === 'pending',
+                'bg-green-500/10 text-green-400': r.status === 'approved',
+                'bg-red-500/10 text-red-400': r.status === 'rejected'
+              }"
+            >
+              {{ r.status }}
+            </span>
           </li>
         </ul>
       </div>

@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = "sqlite:///db/sentry_lite.db"
 
     MAX_BCRYPT_BYTES: int = 72  # bcrypt limit
+    ENV: str = "development"  # can be 'development', 'production', 'testing'
 
 settings = Settings()
 

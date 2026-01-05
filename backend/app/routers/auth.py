@@ -1,7 +1,7 @@
 from app.models import User
 from app.core.security import hash_password, verify_password, create_access_token, get_logged_user
 from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse, IdentityRead
-from app.db import get_session
+from app.db.db import get_session
 from app.queries import GET_USER_BY_EMAIL, INSERT_USER, GET_OWNED_APPS_BY_USER_ID, GET_MEMBERSHIPS_BY_USER_ID, GET_REQUESTS_BY_USER_ID
 from app.core.settings import settings
 

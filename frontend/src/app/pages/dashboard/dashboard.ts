@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.authService.getIdentity().subscribe({
       next: (data) => {
+        console.log('Identity data:', data);
         this.identity = data;
         this.loading = false;
       },

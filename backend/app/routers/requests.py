@@ -6,7 +6,7 @@ from sqlmodel import Session
 
 from app.schemas import RequestRead, RequestCreate, RequestUpdate
 from app.queries import GET_ROLE_BY_ID, GET_REQUEST_BY_USER_ID_AND_ROLE_ID, INSERT_REQUEST, GET_REQUESTS_BY_USER_ID, GET_REQUESTS_BY_REQUEST_ID, GET_REQUESTS_BY_POC, UPDATE_REQUEST_STATUS, INSERT_MEMBERSHIP
-from app.db import get_session
+from app.db.db import get_session
 from app.core.security import get_logged_user
 
 router = APIRouter(prefix="/requests", tags=["requests"])
