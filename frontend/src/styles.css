@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* App defaults */
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #030712; /* gray-950 */
+  color: #f9fafb;            /* gray-50 */
+}

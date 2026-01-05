@@ -1,0 +1,43 @@
+<div class="space-y-6">
+  <h1 class="text-2xl font-semibold text-zinc-100">Dashboard</h1>
+
+  <div class="space-y-8">
+    <h1 class="text-2xl font-semibold text-zinc-100">Identity</h1>
+
+    <!-- Loading -->
+    <p *ngIf="loading" class="text-zinc-400">Loading identity…</p>
+
+    <!-- Error -->
+    <p *ngIf="error" class="text-red-400">Failed to load identity.</p>
+
+    <!-- Identity Data -->
+    <div *ngIf="identity" class="space-y-6">
+      <!-- User Info -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+        <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-2">User</h2>
+        <p class="text-zinc-100">
+          {{ identity.email }}
+        </p>
+      </div>
+
+      <!-- Memberships -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+        <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">Memberships</h2>
+
+        <div *ngIf="identity.memberships?.length === 0" class="text-zinc-500">
+          No memberships assigned
+        </div>
+
+        <ul class="space-y-2">
+          <li
+            *ngFor="let m of identity.memberships"
+            class="flex justify-between text-sm text-zinc-300"
+          >
+            <span>{{ m.app }}</span>
+            <span class="text-cyan-400">{{ m.role }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

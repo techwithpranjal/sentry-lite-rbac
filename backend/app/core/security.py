@@ -4,8 +4,13 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.hash import bcrypt
 
-from fastapi import HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+
 from app.core.settings import settings
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+
 
 def hash_password(password: str) -> str:
     password = password.encode("utf-8")[:settings.MAX_BCRYPT_BYTES].decode("utf-8", "ignore")
@@ -28,7 +33,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
                 algorithm=settings.JWT_ALGORITHM)
     return encoded_jwt
 
-def get_logged_user(token: str) -> Optional[dict]:
+def get_logged_user(token: str = Depends(oauth2_scheme)) -> Optional[dict]:
     """Extract user information from JWT token in request headers."""
 
     try:

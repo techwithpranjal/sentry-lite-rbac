@@ -70,8 +70,8 @@ def login_user(login_req: LoginRequest, session: Session = Depends(get_session))
     return TokenResponse(access_token=access_token)
 
 
-@router.post("/identity", response_model=IdentityRead, status_code=status.HTTP_200_OK)
-def get_identity(session: Session = Depends(get_session) ,current_user: dict = Depends(get_logged_user)):
+@router.get("/identity", response_model=IdentityRead, status_code=status.HTTP_200_OK)
+def get_identity(session: Session = Depends(get_session), current_user: dict = Depends(get_logged_user)):
     """Aggregated identity endpoint.
     Returns user info, owned apps, memberships, and pending requests.
     """
