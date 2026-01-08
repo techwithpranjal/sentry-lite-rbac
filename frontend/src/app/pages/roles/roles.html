@@ -1,0 +1,150 @@
+<div class="space-y-6">
+  <h1 class="text-2xl font-semibold text-zinc-100">Roles</h1>
+
+  <!-- App Selector -->
+  <div class="space-y-4">
+    <label class="block text-sm font-medium text-zinc-400"> Select Application </label>
+
+    <div class="relative">
+      <select
+        class="w-full appearance-none bg-zinc-900 text-zinc-100 border border-zinc-700 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition"
+        (change)="onAppChange($event)"
+      >
+        <option value="">Choose an app</option>
+        <option *ngFor="let app of apps" [value]="app.id" [selected]="app.id === selectedAppId">
+          {{ app.name }}
+        </option>
+      </select>
+
+      <!-- Dropdown icon -->
+      <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+        <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <p *ngIf="!roles.length && !loading" class="text-zinc-500 mt-6">
+    No roles found for this application.
+  </p>
+
+  <div class="flex justify-between items-center mt-6">
+    <h2 class="text-sm uppercase text-zinc-400 tracking-wide">Roles</h2>
+
+    <button
+      class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+      (click)="openCreateRole()"
+    >
+      + Create Role
+    </button>
+  </div>
+
+  <!-- Create Role Modal -->
+  <div
+    *ngIf="showCreateModal"
+    class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+  >
+    <div class="bg-zinc-900 border border-zinc-800 rounded-lg w-full max-w-md p-6 space-y-4">
+      <h3 class="text-lg font-semibold text-zinc-100">Create Role</h3>
+
+      <!-- App Dropdown -->
+      <div>
+        <label class="text-sm text-zinc-400">Application</label>
+        <select
+          class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+          [(ngModel)]="newRole.app_id"
+        >
+          <option value="">Select owned app</option>
+          <option *ngFor="let app of ownedApps" [value]="app.id">
+            {{ app.name }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Role Name -->
+      <div>
+        <label class="text-sm text-zinc-400">Role Name</label>
+        <input
+          type="text"
+          class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+          [(ngModel)]="newRole.name"
+        />
+      </div>
+
+      <!-- Description -->
+      <div>
+        <label class="text-sm text-zinc-400">Description</label>
+        <textarea
+          rows="3"
+          class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+          [(ngModel)]="newRole.description"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3 pt-2">
+        <button class="text-zinc-400 hover:text-zinc-200 text-sm" (click)="closeCreateRole()">
+          Cancel
+        </button>
+        <button
+          class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+          (click)="createRole()"
+        >
+          Create
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roles Table -->
+  <div *ngIf="roles.length" class="mt-6">
+    <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-3">Roles</h2>
+
+    <div class="overflow-x-auto border border-zinc-800 rounded-lg">
+      <table class="min-w-full text-sm text-left">
+        <thead class="bg-zinc-900 border-b border-zinc-800">
+          <tr>
+            <th class="px-4 py-3 font-medium text-zinc-400">Role Name</th>
+            <th class="px-4 py-3 font-medium text-zinc-400">Description</th>
+            <th class="px-4 py-3 font-medium text-zinc-400">Created</th>
+            <th class="px-4 py-3 font-medium text-zinc-400 text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let role of roles"
+            class="border-b border-zinc-800 hover:bg-zinc-900 transition"
+          >
+            <td class="px-4 py-3 text-zinc-100 font-medium">
+              {{ role.name }}
+            </td>
+
+            <td class="px-4 py-3 text-zinc-400">
+              {{ role.description || '—' }}
+            </td>
+
+            <td class="px-4 py-3 text-zinc-500">
+              {{ role.created_at | date : 'mediumDate' }}
+            </td>
+
+            <td class="px-4 py-3 text-right">
+              <button class="text-cyan-400 hover:text-cyan-300 text-xs font-medium">
+                View Members
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <p *ngIf="!selectedAppId" class="text-zinc-500">Select an application to view its roles.</p>
+</div>

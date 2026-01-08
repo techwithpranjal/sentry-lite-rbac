@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './pages/login/login';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { AppsComponent } from './pages/apps/apps';
+import { RolesComponent } from './pages/roles/roles';
 import { AuthenticatedLayoutComponent } from './layouts/authenticated-layout/authenticated-layout';
 import { authGuard } from './guards/auth.guard';
 
@@ -15,7 +16,8 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'apps', component: AppsComponent },
-      // { path: 'requests', loadComponent: () => import('./pages/requests/requests').then(m => m.RequestsComponent) },
+      { path: 'roles', component: RolesComponent },
+      { path: 'roles/:appId', component: RolesComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
