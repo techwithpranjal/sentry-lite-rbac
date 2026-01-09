@@ -133,8 +133,10 @@ export class RolesComponent implements OnInit {
     return !this.isMember(roleId);
   }
 
-  viewMembers(roleId: number) {}
-
+  viewMembers(roleId: number) {
+    this.router.navigate(['/roles', this.selectedAppId, 'members', roleId]);
+  }
+  
   openRequestAccess(roleId: number) {
     if (!this.selectedAppId) return;
 

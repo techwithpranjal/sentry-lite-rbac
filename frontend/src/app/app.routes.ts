@@ -7,6 +7,7 @@ import { RolesComponent } from './pages/roles/roles';
 import { AuthenticatedLayoutComponent } from './layouts/authenticated-layout/authenticated-layout';
 import { authGuard } from './guards/auth.guard';
 import { RegisterComponent } from './pages/register/register';
+import { MembersComponent } from './pages/members/members';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -20,6 +21,7 @@ export const routes: Routes = [
       { path: 'apps', component: AppsComponent },
       { path: 'roles', component: RolesComponent },
       { path: 'roles/:appId', component: RolesComponent },
+      { path: 'roles/:appId/members/:roleId', component: MembersComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
