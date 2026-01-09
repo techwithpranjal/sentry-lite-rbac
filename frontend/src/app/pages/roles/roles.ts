@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppsService } from '../../services/apps.service';
 import { RolesService } from '../../services/roles.service';
 import { AuthService } from '../../services/auth.service';
+import { RequestsService } from '../../services/requests.service';
 
 @Component({
   standalone: true,
@@ -16,7 +17,7 @@ import { AuthService } from '../../services/auth.service';
 export class RolesComponent implements OnInit {
   apps: any[] = [];
   roles: any[] = [];
-  memberships: number[] = []; 
+  memberships: number[] = [];
 
   selectedAppId: number | null = null;
 
@@ -32,12 +33,21 @@ export class RolesComponent implements OnInit {
     description: '',
   };
 
+  showRequestModal = false;
+
+  requestPayload = {
+    app_id: 0,
+    role_id: 0,
+    justification: '',
+  };
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private appsService: AppsService,
     private rolesService: RolesService,
-    private identityService: AuthService
+    private identityService: AuthService,
+    private requestsService: RequestsService
   ) {}
 
   ngOnInit() {
@@ -102,7 +112,7 @@ export class RolesComponent implements OnInit {
     this.rolesService.createRole(this.newRole).subscribe(() => {
       this.closeCreateRole();
       this.loadRoles(appId);
-      
+
       this.router.navigate(['/roles', appId]);
     });
   }
@@ -110,8 +120,45 @@ export class RolesComponent implements OnInit {
   isMember(roleId: number): boolean {
     return this.memberships.includes(roleId);
   }
-  
+
+  isOwner(appId: number): boolean {
+    return this.ownedApps.some((app) => app.id === appId);
+  }
+
+  canViewMembers(roleId: number): boolean {
+    return this.isOwner(this.selectedAppId!) || this.isMember(roleId);
+  }
+
+  canRequestAccess(roleId: number): boolean {
+    return !this.isMember(roleId);
+  }
+
   viewMembers(roleId: number) {}
 
-  openRequestAccess(roleId: number) {}
+  openRequestAccess(roleId: number) {
+    if (!this.selectedAppId) return;
+
+    this.requestPayload = {
+      app_id: this.selectedAppId,
+      role_id: roleId,
+      justification: '',
+    };
+
+    this.showRequestModal = true;
+  }
+
+  closeRequestAccess() {
+    this.showRequestModal = false;
+    this.requestPayload = { app_id: 0, role_id: 0, justification: '' };
+  }
+
+  submitRequestAccess() {
+    if (!this.requestPayload.app_id || !this.requestPayload.role_id) return;
+
+    this.requestsService.createRequest(this.requestPayload).subscribe({
+      next: () => {
+        this.closeRequestAccess();
+      },
+    });
+  }
 }

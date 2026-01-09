@@ -1,5 +1,59 @@
 <div class="space-y-6">
-  <h1 class="text-2xl font-semibold text-zinc-100">Applications</h1>
+  <div>
+    <h1 class="text-2xl font-semibold text-zinc-100">Applications</h1>
+
+    <div class="flex items-center justify-end mb-8">
+      <button
+        class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+        (click)="openCreateModal()"
+      >
+        + Create App
+      </button>
+
+      <!-- Create App Modal -->
+      <div
+        *ngIf="showCreateModal"
+        class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+      >
+        <div class="bg-zinc-900 border border-zinc-800 rounded-lg w-full max-w-md p-6 space-y-4">
+          <h3 class="text-lg font-semibold text-zinc-100">Create Application</h3>
+
+          <!-- App Name -->
+          <div>
+            <label class="text-sm text-zinc-400">Name</label>
+            <input
+              type="text"
+              class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+              [(ngModel)]="newApp.name"
+            />
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="text-sm text-zinc-400">Description</label>
+            <textarea
+              rows="3"
+              class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+              [(ngModel)]="newApp.description"
+            ></textarea>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-end gap-3 pt-2">
+            <button class="text-zinc-400 hover:text-zinc-200 text-sm" (click)="closeCreateModal()">
+              Cancel
+            </button>
+            <button
+              class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+              (click)="submitCreateApp()"
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Tabs -->
   <div class="flex gap-4 border-b border-zinc-800 text-sm">
@@ -71,58 +125,6 @@
   <div class="mt-8" *ngIf="activeTab === 'owned'">
     <div *ngIf="ownedApps.length === 0" class="text-zinc-500 text-sm">
       You don’t own any applications yet.
-    </div>
-
-    <div class="flex items-center justify-end">
-      <button
-        class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
-        (click)="openCreateModal()"
-      >
-        + Create App
-      </button>
-    </div>
-
-    <!-- Create App Modal -->
-    <div
-      *ngIf="showCreateModal"
-      class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-    >
-      <div class="bg-zinc-900 border border-zinc-800 rounded-lg w-full max-w-md p-6 space-y-4">
-        <h3 class="text-lg font-semibold text-zinc-100">Create Application</h3>
-
-        <!-- App Name -->
-        <div>
-          <label class="text-sm text-zinc-400">Name</label>
-          <input
-            type="text"
-            class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
-            [(ngModel)]="newApp.name"
-          />
-        </div>
-
-        <!-- Description -->
-        <div>
-          <label class="text-sm text-zinc-400">Description</label>
-          <textarea
-            rows="3"
-            class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
-            [(ngModel)]="newApp.description"
-          ></textarea>
-        </div>
-
-        <!-- Actions -->
-        <div class="flex justify-end gap-3 pt-2">
-          <button class="text-zinc-400 hover:text-zinc-200 text-sm" (click)="closeCreateModal()">
-            Cancel
-          </button>
-          <button
-            class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
-            (click)="submitCreateApp()"
-          >
-            Create
-          </button>
-        </div>
-      </div>
     </div>
 
     <div *ngIf="ownedApps.length" class="overflow-x-auto border border-zinc-800 rounded-lg">
