@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AppsService } from '../../services/apps.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 type Tab = 'all' | 'owned';
 

@@ -6,9 +6,11 @@ import { AppsComponent } from './pages/apps/apps';
 import { RolesComponent } from './pages/roles/roles';
 import { AuthenticatedLayoutComponent } from './layouts/authenticated-layout/authenticated-layout';
 import { authGuard } from './guards/auth.guard';
+import { RegisterComponent } from './pages/register/register';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   {
     path: '',
     component: AuthenticatedLayoutComponent,

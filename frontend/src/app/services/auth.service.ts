@@ -20,6 +20,13 @@ export class AuthService {
     );
   }
 
+  register(email: string, password: string) {
+    return this.http.post(
+      `${environment.apiBaseUrl}/auth/register`,
+      { email, password }
+    );
+  }
+
   getToken() {
     return localStorage.getItem(this.TOKEN_KEY);
   }

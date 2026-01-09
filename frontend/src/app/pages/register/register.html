@@ -1,0 +1,42 @@
+<div class="min-h-screen flex items-center justify-center bg-zinc-950">
+    <div class="w-full max-w-md bg-zinc-900 border border-zinc-800 rounded-lg p-6 space-y-6">
+      <h1 class="text-xl font-semibold text-zinc-100 text-center">
+        Create Account
+      </h1>
+  
+      <div class="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          class="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+          [(ngModel)]="email"
+        />
+  
+        <input
+          type="password"
+          placeholder="Password"
+          class="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+          [(ngModel)]="password"
+        />
+  
+        <p *ngIf="error" class="text-sm text-red-400">
+          {{ error }}
+        </p>
+  
+        <button
+          class="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-2 rounded-md"
+          (click)="register()"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Creating account...' : 'Register' }}
+        </button>
+      </div>
+  
+      <p class="text-sm text-zinc-400 text-center">
+        Already have an account?
+        <a routerLink="/login" class="text-cyan-400 hover:underline">
+          Sign in
+        </a>
+      </p>
+    </div>
+  </div>
