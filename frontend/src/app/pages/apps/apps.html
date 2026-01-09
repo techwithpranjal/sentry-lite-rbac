@@ -19,11 +19,7 @@
   <p *ngIf="error" class="text-red-400">Failed to load applications.</p>
 
   <!-- All Applications -->
-  <div class="mt-8">
-    <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-3">
-      All Applications
-    </h2>
-  
+  <div class="mt-8" *ngIf="activeTab === 'all'">
     <div class="overflow-x-auto border border-zinc-800 rounded-lg">
       <table class="min-w-full text-sm text-left">
         <thead class="bg-zinc-900 border-b border-zinc-800">
@@ -31,10 +27,11 @@
             <th class="px-4 py-3 text-zinc-400">Name</th>
             <th class="px-4 py-3 text-zinc-400">Slug</th>
             <th class="px-4 py-3 text-zinc-400">Description</th>
+            <th class="px-4 py-3 text-zinc-400">Owner</th>
             <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
           </tr>
         </thead>
-  
+
         <tbody>
           <tr
             *ngFor="let app of allApps"
@@ -43,15 +40,19 @@
             <td class="px-4 py-3 text-zinc-100 font-medium">
               {{ app.name }}
             </td>
-  
+
             <td class="px-4 py-3 text-zinc-400">
               {{ app.slug }}
             </td>
-  
+
             <td class="px-4 py-3 text-zinc-500">
               {{ app.description || '—' }}
             </td>
-  
+
+            <td class="px-4 py-3 text-zinc-400">
+              {{ app.poc_user_email }}
+            </td>
+
             <td class="px-4 py-3 text-right">
               <button
                 class="text-cyan-400 hover:text-cyan-300 text-xs font-medium"
@@ -67,19 +68,64 @@
   </div>
 
   <!-- Owned Apps -->
-  <div class="mt-10">
-    <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-3">
-      My Applications
-    </h2>
-  
+  <div class="mt-8" *ngIf="activeTab === 'owned'">
     <div *ngIf="ownedApps.length === 0" class="text-zinc-500 text-sm">
       You don’t own any applications yet.
     </div>
-  
+
+    <div class="flex items-center justify-end">
+      <button
+        class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+        (click)="openCreateModal()"
+      >
+        + Create App
+      </button>
+    </div>
+
+    <!-- Create App Modal -->
     <div
-      *ngIf="ownedApps.length"
-      class="overflow-x-auto border border-zinc-800 rounded-lg"
+      *ngIf="showCreateModal"
+      class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
     >
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg w-full max-w-md p-6 space-y-4">
+        <h3 class="text-lg font-semibold text-zinc-100">Create Application</h3>
+
+        <!-- App Name -->
+        <div>
+          <label class="text-sm text-zinc-400">Name</label>
+          <input
+            type="text"
+            class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+            [(ngModel)]="newApp.name"
+          />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="text-sm text-zinc-400">Description</label>
+          <textarea
+            rows="3"
+            class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+            [(ngModel)]="newApp.description"
+          ></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-3 pt-2">
+          <button class="text-zinc-400 hover:text-zinc-200 text-sm" (click)="closeCreateModal()">
+            Cancel
+          </button>
+          <button
+            class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+            (click)="submitCreateApp()"
+          >
+            Create
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="ownedApps.length" class="overflow-x-auto border border-zinc-800 rounded-lg">
       <table class="min-w-full text-sm text-left">
         <thead class="bg-zinc-900 border-b border-zinc-800">
           <tr>
@@ -89,7 +135,7 @@
             <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
           </tr>
         </thead>
-  
+
         <tbody>
           <tr
             *ngFor="let app of ownedApps"
@@ -98,15 +144,15 @@
             <td class="px-4 py-3 text-zinc-100 font-medium">
               {{ app.name }}
             </td>
-  
+
             <td class="px-4 py-3 text-zinc-400">
               {{ app.slug }}
             </td>
-  
+
             <td class="px-4 py-3 text-zinc-500">
               {{ app.description || '—' }}
             </td>
-  
+
             <td class="px-4 py-3 text-right">
               <button
                 class="text-cyan-400 hover:text-cyan-300 text-xs font-medium"

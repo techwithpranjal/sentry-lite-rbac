@@ -14,7 +14,7 @@ app = FastAPI(title="Sentry Lite")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:50697"],
+    allow_origins=["http://localhost:52538"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

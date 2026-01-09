@@ -42,7 +42,7 @@ class AppRead(BaseModel):
     name: str
     slug: str
     description: str
-    poc_user_id: int
+    poc_user_email: str
     created_at: datetime
 
 # ---- Role schemas ----

@@ -15,7 +15,7 @@ class App(SQLModel, table=True):
     name: str
     slug: str
     description: str
-    poc_user_id: int = Field(foreign_key="user.id")
+    poc_user_email: int = Field(foreign_key="user.email")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
 

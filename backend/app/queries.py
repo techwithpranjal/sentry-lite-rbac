@@ -14,7 +14,7 @@ INSERT_USER = text("""
 # App Queries
 
 GET_APPS = text("""
-    SELECT id, name, slug, description, poc_user_id, created_at FROM app ORDER BY created_at DESC
+    SELECT id, name, slug, description, poc_user_email, created_at FROM app ORDER BY created_at DESC
 """)
 
 GET_APP_BY_APP_ID = text("""
@@ -26,12 +26,12 @@ GET_APP_BY_SLUG = text("""
 """)
 
 INSERT_APP = text("""
-    INSERT INTO app (name, slug, description, poc_user_id, created_at)
-    VALUES (:name, :slug, :description, :poc_user_id, :created_at)
+    INSERT INTO app (name, slug, description, poc_user_email, created_at)
+    VALUES (:name, :slug, :description, :poc_user_email, :created_at)
 """)
 
-GET_OWNED_APPS_BY_USER_ID = text("""
-    SELECT id, name, slug, description, poc_user_id, created_at FROM app WHERE poc_user_id = :user_id ORDER BY created_at DESC
+GET_OWNED_APPS_BY_USER_EMAIL = text("""
+    SELECT id, name, slug, description, poc_user_email, created_at FROM app WHERE poc_user_email = :email ORDER BY created_at DESC
 """)
 
 # Role Queries

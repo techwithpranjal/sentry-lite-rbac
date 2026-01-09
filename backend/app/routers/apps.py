@@ -25,7 +25,7 @@ def get_apps(session: Session = Depends(get_session)):
             name=row.name,
             slug=row.slug,
             description=row.description,
-            poc_user_id=row.poc_user_id,
+            poc_user_email=row.poc_user_email,
             created_at=row.created_at
         )
         for row in rows
@@ -48,7 +48,7 @@ def create_app(app: AppCreate, session: Session = Depends(get_session), current_
                 "name": app.name,
                 "slug": app.slug,
                 "description": app.description,
-                "poc_user_id": current_user["sub"]["id"],
+                "poc_user_email": current_user["sub"]["email"],
                 "created_at": datetime.utcnow()
             }
         )
@@ -63,7 +63,7 @@ def create_app(app: AppCreate, session: Session = Depends(get_session), current_
         name=row.name,
         slug=row.slug,
         description=row.description,
-        poc_user_id=row.poc_user_id,
+        poc_user_email=row.poc_user_email,
         created_at=row.created_at
     )
     return new_app

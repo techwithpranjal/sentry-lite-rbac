@@ -26,6 +26,7 @@ export class AppsComponent implements OnInit {
 
   newApp = {
     name: '',
+    slug: '',
     description: '',
   };
 
@@ -70,7 +71,7 @@ export class AppsComponent implements OnInit {
 
   closeCreateModal() {
     this.showCreateModal = false;
-    this.newApp = { name: '', description: '' };
+    this.newApp = { name: '', slug: '', description: '' };
   }
 
   generateSlug(name: string): string {
