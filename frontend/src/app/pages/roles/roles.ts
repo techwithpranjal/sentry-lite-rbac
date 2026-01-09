@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth.service';
 export class RolesComponent implements OnInit {
   apps: any[] = [];
   roles: any[] = [];
+  memberships: number[] = []; 
 
   selectedAppId: number | null = null;
 
@@ -44,7 +45,6 @@ export class RolesComponent implements OnInit {
 
     this.route.paramMap.subscribe((params) => {
       this.selectedAppId = Number(params.get('appId'));
-      console.log('Selected App ID:', this.selectedAppId);
       if (this.selectedAppId) {
         this.loadRoles(this.selectedAppId);
       }
@@ -57,6 +57,7 @@ export class RolesComponent implements OnInit {
     });
     this.identityService.getIdentity().subscribe((res) => {
       this.ownedApps = res.owned_apps;
+      this.memberships = res.memberships.map((m: any) => m.role_id);
     });
   }
 
@@ -105,4 +106,12 @@ export class RolesComponent implements OnInit {
       this.router.navigate(['/roles', appId]);
     });
   }
+
+  isMember(roleId: number): boolean {
+    return this.memberships.includes(roleId);
+  }
+  
+  viewMembers(roleId: number) {}
+
+  openRequestAccess(roleId: number) {}
 }

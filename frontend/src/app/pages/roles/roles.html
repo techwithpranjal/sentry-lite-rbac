@@ -135,8 +135,22 @@
             </td>
 
             <td class="px-4 py-3 text-right">
-              <button class="text-cyan-400 hover:text-cyan-300 text-xs font-medium">
+              <!-- If member -->
+              <button
+                *ngIf="isMember(role.id)"
+                class="text-cyan-400 hover:text-cyan-300 text-xs font-medium"
+                (click)="viewMembers(role.id)"
+              >
                 View Members
+              </button>
+            
+              <!-- If not member -->
+              <button
+                *ngIf="!isMember(role.id)"
+                class="text-amber-400 hover:text-amber-300 text-xs font-medium"
+                (click)="openRequestAccess(role.id)"
+              >
+                Request Access
               </button>
             </td>
           </tr>

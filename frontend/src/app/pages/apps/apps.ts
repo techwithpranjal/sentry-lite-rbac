@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AppsService } from '../../services/apps.service';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 type Tab = 'all' | 'owned';
 
@@ -28,7 +29,11 @@ export class AppsComponent implements OnInit {
     description: '',
   };
 
-  constructor(private appsService: AppsService, private identityService: AuthService) {}
+  constructor(
+    private appsService: AppsService,
+    private identityService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadApps();
@@ -105,5 +110,9 @@ export class AppsComponent implements OnInit {
         console.error('Failed to create app', err);
       },
     });
+  }
+
+  viewRoles(appId: number) {
+    this.router.navigate(['/roles', appId]);
   }
 }
