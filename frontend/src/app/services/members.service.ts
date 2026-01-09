@@ -9,12 +9,32 @@ export class MembersService {
 
   getMembersByRole(roleId: number): Observable<any[]> {
     return this.http.get<any[]>(
-      `${environment.apiBaseUrl}/roles?app_id=${roleId}`,
+      `${environment.apiBaseUrl}/memberships?role_id=${roleId}`,
       {
         headers: new HttpHeaders({
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         }),
       }
     );
+  }
+
+  addMember(payload: {
+    user_email: string;
+    app_id: number;
+    role_id: number;
+  }) {
+    return this.http.post<any>(`${environment.apiBaseUrl}/memberships`, payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      }
+    });
+  }
+
+  deleteMember(membershipId: number) {
+    return this.http.delete<any>(`${environment.apiBaseUrl}/memberships?membership_id=${membershipId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+      }
+    });
   }
 }

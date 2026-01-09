@@ -29,10 +29,11 @@ class Role(SQLModel, table=True):
 
 class Membership(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id")
+    user_email: int = Field(foreign_key="user.email")
     app_id: int = Field(foreign_key="app.id")
     role_id: int = Field(foreign_key="role.id")
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_by: Optional[str] = Field(default=None, foreign_key="user.email")
 
 
 class Request(SQLModel, table=True):

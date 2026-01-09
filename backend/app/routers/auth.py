@@ -2,7 +2,7 @@ from app.models import User
 from app.core.security import hash_password, verify_password, create_access_token, get_logged_user
 from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse, IdentityRead
 from app.db.db import get_session
-from app.queries import GET_USER_BY_EMAIL, INSERT_USER, GET_OWNED_APPS_BY_USER_EMAIL, GET_MEMBERSHIPS_BY_USER_ID, GET_REQUESTS_BY_USER_ID
+from app.queries import GET_USER_BY_EMAIL, INSERT_USER, GET_OWNED_APPS_BY_USER_EMAIL, GET_MEMBERSHIPS_BY_USER_EMAIL, GET_REQUESTS_BY_USER_ID
 from app.core.settings import settings
 
 from datetime import timedelta, datetime
@@ -98,7 +98,7 @@ def get_identity(session: Session = Depends(get_session), current_user: dict = D
     ]
 
     memberships_results = session.exec(
-        GET_MEMBERSHIPS_BY_USER_ID.params({"user_id": current_user["sub"]["id"]})
+        GET_MEMBERSHIPS_BY_USER_EMAIL.params({"user_email": current_user["sub"]["email"]})
     ).fetchall()
 
     memberships = [
@@ -106,7 +106,7 @@ def get_identity(session: Session = Depends(get_session), current_user: dict = D
             "id": membership.id,
             "role_id": membership.role_id,
             "app_id": membership.app_id,
-            "user_id": membership.user_id,
+            "user_email": membership.user_email,
             "created_at": membership.created_at
         }
         for membership in memberships_results

@@ -62,16 +62,18 @@ class RoleRead(BaseModel):
 # ---- Membership schemas ----
 
 class MembershipCreate(BaseModel):
-    user_id: int
+    user_email: str
     app_id: int
     role_id: int
+    created_by: Optional[str] = None
 
 class MembershipRead(BaseModel):
     id: int
-    user_id: int
+    user_email: str
     app_id: int
     role_id: int
     created_at: datetime
+    created_by: Optional[str] = None
     
 # ---- Request schemas ----
 

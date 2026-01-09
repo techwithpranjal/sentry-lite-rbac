@@ -1,34 +1,87 @@
 <div class="space-y-6">
+  <div class="flex justify-between items-center">
     <h1 class="text-2xl font-semibold text-zinc-100">Role Members</h1>
-  
-    <p *ngIf="loading" class="text-zinc-400">Loading members…</p>
-  
-    <div *ngIf="!loading && members.length === 0" class="text-zinc-500">
-      No members assigned to this role.
-    </div>
-  
-    <div *ngIf="members.length" class="overflow-x-auto border border-zinc-800 rounded-lg">
-      <table class="min-w-full text-sm text-left">
-        <thead class="bg-zinc-900 border-b border-zinc-800">
-          <tr>
-            <th class="px-4 py-3 text-zinc-400">User</th>
-            <th class="px-4 py-3 text-zinc-400">Joined</th>
-          </tr>
-        </thead>
-  
-        <tbody>
-          <tr
-            *ngFor="let m of members"
-            class="border-b border-zinc-800 hover:bg-zinc-900 transition"
+
+    <button
+      *ngIf="isOwner"
+      class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+      (click)="showAddModal = true"
+    >
+      + Add Member
+    </button>
+
+    <!-- Add Member Modal -->
+    <div
+      *ngIf="showAddModal"
+      class="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+    >
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg w-full max-w-md p-6 space-y-4">
+        <h3 class="text-lg font-semibold text-zinc-100">Add Member</h3>
+
+        <div>
+          <label class="text-sm text-zinc-400">User Email</label>
+          <input
+            type="email"
+            class="mt-1 w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-2 text-zinc-100"
+            [(ngModel)]="newMemberEmail"
+          />
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button class="text-zinc-400 hover:text-zinc-200 text-sm" (click)="closeAddMember()">
+            Cancel
+          </button>
+
+          <button
+            class="bg-cyan-600 hover:bg-cyan-700 text-white text-sm px-4 py-2 rounded-md"
+            [disabled]="adding"
+            (click)="addMember()"
           >
-            <td class="px-4 py-3 text-zinc-100">
-              {{ m.email }}
-            </td>
-            <td class="px-4 py-3 text-zinc-500">
-              {{ m.created_at | date: 'mediumDate' }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            {{ adding ? 'Adding…' : 'Add Member' }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+  <p *ngIf="loading" class="text-zinc-400">Loading members…</p>
+
+  <div *ngIf="!loading && members.length === 0" class="text-zinc-500">
+    No members assigned to this role.
+  </div>
+
+  <div *ngIf="members.length" class="overflow-x-auto border border-zinc-800 rounded-lg">
+    <table class="min-w-full text-sm text-left">
+      <thead class="bg-zinc-900 border-b border-zinc-800">
+        <tr>
+          <th class="px-4 py-3 text-zinc-400">User</th>
+          <th class="px-4 py-3 text-zinc-400">Joined</th>
+          <th class="px-4 py-3 text-zinc-400">Added by</th>
+          <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let m of members" class="border-b border-zinc-800 hover:bg-zinc-900 transition">
+          <td class="px-4 py-3 text-zinc-100">
+            {{ m.user_email }}
+          </td>
+          <td class="px-4 py-3 text-zinc-500">
+            {{ m.created_at | date : 'mediumDate' }}
+          </td>
+          <td class="px-4 py-3 text-zinc-100">
+            {{ m.created_by }}
+          </td>
+          <td class="px-4 py-3 text-right">
+            <button
+              *ngIf="isOwner"
+              class="text-red-400 hover:text-red-300 text-xs font-medium"
+              (click)="removeMember(m.id)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

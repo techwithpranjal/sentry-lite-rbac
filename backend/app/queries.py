@@ -34,6 +34,10 @@ GET_OWNED_APPS_BY_USER_EMAIL = text("""
     SELECT id, name, slug, description, poc_user_email, created_at FROM app WHERE poc_user_email = :email ORDER BY created_at DESC
 """)
 
+CHECK_IF_USER_IS_APP_OWNER = text("""
+    SELECT 1 FROM app WHERE id = :app_id AND poc_user_email = :poc_user_email
+""")
+
 # Role Queries
 
 GET_ROLES_BY_APP_ID = text("""
@@ -56,20 +60,28 @@ GET_ROLE_BY_ID = text("""
 # Membership Queries
 
 GET_MEMBERSHIPS_BY_ROLE_ID = text("""
-    SELECT id, role_id, app_id, user_id, created_at FROM membership WHERE role_id = :role_id ORDER BY created_at DESC
+    SELECT id, role_id, app_id, user_email, created_at, created_by FROM membership WHERE role_id = :role_id ORDER BY created_at DESC
 """)
 
 INSERT_MEMBERSHIP = text("""
-    INSERT INTO membership (user_id, app_id, role_id, created_at)
-    VALUES (:user_id, :app_id, :role_id, :created_at)
+    INSERT INTO membership (user_email, app_id, role_id, created_at, created_by)
+    VALUES (:user_email, :app_id, :role_id, :created_at, :created_by)
 """)
 
-GET_MEMBERSHIP_BY_USER_ID_AND_ROLE_ID = text("""
-    SELECT * FROM membership WHERE user_id = :user_id AND role_id = :role_id
+GET_MEMBERSHIP_BY_USER_EMAIL_AND_ROLE_ID = text("""
+    SELECT * FROM membership WHERE user_email = :user_email AND role_id = :role_id
 """)
 
-GET_MEMBERSHIPS_BY_USER_ID = text("""
-    SELECT id, role_id, app_id, user_id, created_at FROM membership WHERE user_id = :user_id ORDER BY created_at DESC
+GET_MEMBERSHIP_BY_ID = text("""
+    SELECT * FROM membership WHERE id = :id
+""")
+
+GET_MEMBERSHIPS_BY_USER_EMAIL = text("""
+    SELECT id, role_id, app_id, user_email, created_at, created_by FROM membership WHERE user_email = :user_email ORDER BY created_at DESC
+""")
+
+DELETE_MEMBERSHIP_BY_ID = text("""
+    DELETE FROM membership WHERE id = :id
 """)
 
 # Request Queries
