@@ -27,7 +27,9 @@ def get_memberships(role_id: int, session: Session = Depends(get_session)):
             id=row.id,
             user_email=row.user_email,
             app_id=row.app_id,
+            app_name=row.app_name,
             role_id=row.role_id,
+            role_name=row.role_name,
             created_at=row.created_at,
             created_by=row.created_by
         )
@@ -105,7 +107,9 @@ def create_membership(membership: MembershipCreate, session: Session = Depends(g
         id=result.id,
         user_email=result.user_email,
         app_id=result.app_id,
+        app_name=result.app_name,
         role_id=result.role_id,
+        role_name=result.role_name,
         created_at=result.created_at,
         created_by=result.created_by
     )
@@ -133,7 +137,6 @@ def delete_membership(membership_id: int, session: Session = Depends(get_session
     session.commit()
     return
 
-
 @router.get("/me", response_model=List[MembershipRead], status_code=status.HTTP_200_OK)
 def get_my_memberships(session: Session = Depends(get_session), current_user: User = Depends(get_logged_user)):
     """Retrieve the list of memberships for the current user."""
@@ -148,7 +151,9 @@ def get_my_memberships(session: Session = Depends(get_session), current_user: Us
             id=row.id,
             user_email=row.user_email,
             app_id=row.app_id,
+            app_name=row.app_name,
             role_id=row.role_id,
+            role_name=row.role_name,
             created_at=row.created_at,
             created_by=row.created_by
         )

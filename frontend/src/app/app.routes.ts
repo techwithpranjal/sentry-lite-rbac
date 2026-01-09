@@ -8,6 +8,7 @@ import { AuthenticatedLayoutComponent } from './layouts/authenticated-layout/aut
 import { authGuard } from './guards/auth.guard';
 import { RegisterComponent } from './pages/register/register';
 import { MembersComponent } from './pages/members/members';
+import { AccessComponent } from './pages/access/access';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
       { path: 'roles', component: RolesComponent },
       { path: 'roles/:appId', component: RolesComponent },
       { path: 'roles/:appId/members/:roleId', component: MembersComponent },
+      { path: 'access', component: AccessComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

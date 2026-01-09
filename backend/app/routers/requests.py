@@ -67,7 +67,9 @@ def create_request(request: RequestCreate, session: Session = Depends(get_sessio
         id=result.id,
         user_id=result.user_id,
         app_id=result.app_id,
+        app_name=result.app_name,
         role_id=result.role_id,
+        role_name=result.role_name,
         justification=result.justification,
         status=result.status,
         created_at=result.created_at,
@@ -90,7 +92,9 @@ def get_my_requests(session: Session = Depends(get_session), current_user: dict 
             id=row.id,
             user_id=row.user_id,
             app_id=row.app_id,
+            app_name=row.app_name,
             role_id=row.role_id,
+            role_name=row.role_name,
             justification=row.justification,
             status=row.status,
             created_at=row.created_at,
@@ -108,7 +112,7 @@ def get_my_approvals(session: Session = Depends(get_session), current_user: dict
     #Fetch requests where the current user is the poc for the app
     
     results = session.exec(
-        GET_REQUESTS_BY_POC.params({"poc_user_id": current_user["sub"]["id"]})
+        GET_REQUESTS_BY_POC.params({"poc_user_email": current_user["sub"]["email"]})
     )
     rows = results.fetchall()
     requests = [
@@ -116,7 +120,9 @@ def get_my_approvals(session: Session = Depends(get_session), current_user: dict
             id=row.id,
             user_id=row.user_id,
             app_id=row.app_id,
+            app_name=row.app_name,
             role_id=row.role_id,
+            role_name=row.role_name,
             justification=row.justification,
             status=row.status,
             created_at=row.created_at,
@@ -151,10 +157,11 @@ def update_request(payload: RequestUpdate, session: Session = Depends(get_sessio
         session.exec(
             INSERT_MEMBERSHIP.params(
                 {
-                    "user_id": existing_req.user_id,
+                    "user_email": existing_req.user_email,
                     "app_id": existing_req.app_id,
                     "role_id": existing_req.role_id,
-                    "created_at": datetime.utcnow()
+                    "created_at": datetime.utcnow(),
+                    "created_by": current_user["sub"]["email"]
                 }
             )
         )
@@ -180,7 +187,9 @@ def update_request(payload: RequestUpdate, session: Session = Depends(get_sessio
         id=updated_req.id,
         user_id=updated_req.user_id,
         app_id=updated_req.app_id,
+        app_name=updated_req.app_name,
         role_id=updated_req.role_id,
+        role_name=updated_req.role_name,
         justification=updated_req.justification,
         status=updated_req.status,
         created_at=updated_req.created_at,

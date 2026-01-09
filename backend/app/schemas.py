@@ -71,7 +71,9 @@ class MembershipRead(BaseModel):
     id: int
     user_email: str
     app_id: int
+    app_name: str
     role_id: int
+    role_name: str
     created_at: datetime
     created_by: Optional[str] = None
     
@@ -86,7 +88,9 @@ class RequestRead(BaseModel):
     id: int
     user_id: int
     app_id: int
+    app_name: str
     role_id: int
+    role_name: str
     justification: Optional[str] = None
     status: str
     created_at: datetime

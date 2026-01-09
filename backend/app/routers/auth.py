@@ -105,9 +105,12 @@ def get_identity(session: Session = Depends(get_session), current_user: dict = D
         {
             "id": membership.id,
             "role_id": membership.role_id,
+            "role_name": membership.role_name,
             "app_id": membership.app_id,
+            "app_name": membership.app_name,
             "user_email": membership.user_email,
-            "created_at": membership.created_at
+            "created_at": membership.created_at,
+            "created_by": membership.created_by
         }
         for membership in memberships_results
     ]
@@ -121,7 +124,9 @@ def get_identity(session: Session = Depends(get_session), current_user: dict = D
             "id": req.id,
             "user_id": req.user_id,
             "app_id": req.app_id,
+            "app_name": req.app_name,
             "role_id": req.role_id,
+            "role_name": req.role_name,
             "justification": req.justification,
             "status": req.status,
             "created_at": req.created_at

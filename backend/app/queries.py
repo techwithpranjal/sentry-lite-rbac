@@ -60,7 +60,20 @@ GET_ROLE_BY_ID = text("""
 # Membership Queries
 
 GET_MEMBERSHIPS_BY_ROLE_ID = text("""
-    SELECT id, role_id, app_id, user_email, created_at, created_by FROM membership WHERE role_id = :role_id ORDER BY created_at DESC
+    SELECT
+        m.id,
+        m.role_id,
+        r.name AS role_name,
+        m.app_id,
+        a.name AS app_name,
+        m.user_email,
+        m.created_at,
+        m.created_by
+    FROM membership m
+    JOIN app a ON a.id = m.app_id
+    JOIN role r ON r.id = m.role_id
+    WHERE m.role_id = :role_id
+    ORDER BY m.created_at DESC
 """)
 
 INSERT_MEMBERSHIP = text("""
@@ -69,7 +82,20 @@ INSERT_MEMBERSHIP = text("""
 """)
 
 GET_MEMBERSHIP_BY_USER_EMAIL_AND_ROLE_ID = text("""
-    SELECT * FROM membership WHERE user_email = :user_email AND role_id = :role_id
+    SELECT
+        m.id,
+        m.user_email,
+        m.role_id,
+        r.name AS role_name,
+        m.app_id,
+        a.name AS app_name,
+        m.created_at,
+        m.created_by
+    FROM membership m
+    JOIN role r ON r.id = m.role_id
+    JOIN app a ON a.id = m.app_id
+    WHERE m.user_email = :user_email
+      AND m.role_id = :role_id
 """)
 
 GET_MEMBERSHIP_BY_ID = text("""
@@ -77,7 +103,20 @@ GET_MEMBERSHIP_BY_ID = text("""
 """)
 
 GET_MEMBERSHIPS_BY_USER_EMAIL = text("""
-    SELECT id, role_id, app_id, user_email, created_at, created_by FROM membership WHERE user_email = :user_email ORDER BY created_at DESC
+    SELECT
+        m.id,
+        m.user_email,
+        m.app_id,
+        a.name AS app_name,
+        m.role_id,
+        r.name AS role_name,
+        m.created_at,
+        m.created_by
+    FROM membership m
+    JOIN app a ON a.id = m.app_id
+    JOIN role r ON r.id = m.role_id
+    WHERE m.user_email = :user_email
+    ORDER BY m.created_at DESC
 """)
 
 DELETE_MEMBERSHIP_BY_ID = text("""
@@ -87,7 +126,25 @@ DELETE_MEMBERSHIP_BY_ID = text("""
 # Request Queries
 
 GET_REQUEST_BY_USER_ID_AND_ROLE_ID = text("""
-    SELECT * FROM request WHERE user_id = :user_id AND role_id = :role_id
+    SELECT
+        r.id,
+        r.user_id,
+        u.email AS user_email,
+        r.app_id,
+        a.name AS app_name,
+        r.role_id,
+        ro.name AS role_name,
+        r.justification,
+        r.status,
+        r.created_at,
+        r.updated_at,
+        r.updated_by
+    FROM request r
+    JOIN app a ON a.id = r.app_id
+    JOIN role ro ON ro.id = r.role_id
+    JOIN user u ON u.id = r.user_id
+    WHERE r.user_id = :user_id
+      AND r.role_id = :role_id
 """)
 
 INSERT_REQUEST = text("""
@@ -96,19 +153,65 @@ INSERT_REQUEST = text("""
 """)
 
 GET_REQUESTS_BY_USER_ID = text("""
-    SELECT id, user_id, app_id, role_id, justification, status, created_at, updated_by, updated_at
-    FROM request WHERE user_id = :user_id ORDER BY created_at DESC
+    SELECT
+        r.id,
+        r.user_id,
+        r.app_id,
+        a.name AS app_name,
+        r.role_id,
+        ro.name AS role_name,
+        r.justification,
+        r.status,
+        r.created_at,
+        r.updated_by,
+        r.updated_at
+    FROM request r
+    JOIN app a ON a.id = r.app_id
+    JOIN role ro ON ro.id = r.role_id
+    WHERE r.user_id = :user_id
+    ORDER BY r.created_at DESC
 """)
 
 GET_REQUESTS_BY_REQUEST_ID = text("""
-    SELECT * FROM request WHERE id = :request_id
+    SELECT
+        r.id,
+        r.user_id,
+        u.email AS user_email,
+        r.app_id,
+        a.name AS app_name,
+        r.role_id,
+        ro.name AS role_name,
+        r.justification,
+        r.status,
+        r.created_at,
+        r.updated_by,
+        r.updated_at
+    FROM request r
+    JOIN app a ON a.id = r.app_id
+    JOIN role ro ON ro.id = r.role_id
+    JOIN user u ON u.id = r.user_id
+    WHERE r.id = :request_id
 """)
 
 GET_REQUESTS_BY_POC = text("""
-    SELECT r.id, r.user_id, r.app_id, r.role_id, r.justification, r.status, r.created_at, r.updated_by, r.updated_at
+    SELECT
+        r.id,
+        r.user_id,
+        u.email AS user_email,
+        r.app_id,
+        a.name AS app_name,
+        r.role_id,
+        ro.name AS role_name,
+        r.justification,
+        r.status,
+        r.created_at,
+        r.updated_by,
+        r.updated_at
     FROM request r
     JOIN app a ON r.app_id = a.id
-    WHERE a.poc_user_id = :poc_user_id
+    JOIN role ro ON r.role_id = ro.id
+    JOIN user u ON r.user_id = u.id
+    WHERE a.poc_user_email = :poc_user_email
     ORDER BY r.created_at DESC
 """)
 
