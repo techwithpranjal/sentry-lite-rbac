@@ -13,6 +13,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 def hash_password(password: str) -> str:
+    if password.startswith("$2b$"):
+        return password
     password = password.encode("utf-8")[:settings.MAX_BCRYPT_BYTES].decode("utf-8", "ignore")
     return bcrypt.hash(password)
 
