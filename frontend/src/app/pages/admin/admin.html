@@ -1,0 +1,175 @@
+<div class="space-y-6">
+  <h1 class="text-2xl font-semibold text-zinc-100">Sentry Admin</h1>
+
+  <!-- Tabs -->
+  <div class="flex gap-6 border-b border-zinc-800 text-sm pb-4">
+    <button (click)="setTab('overview')" [class.text-cyan-400]="activeTab === 'overview'">
+      Overview
+    </button>
+    <button (click)="setTab('apps')" [class.text-cyan-400]="activeTab === 'apps'">
+      Applications
+    </button>
+    <button (click)="setTab('roles')" [class.text-cyan-400]="activeTab === 'roles'">Roles</button>
+    <button (click)="setTab('requests')" [class.text-cyan-400]="activeTab === 'requests'">
+      Requests
+    </button>
+    <button (click)="setTab('memberships')" [class.text-cyan-400]="activeTab === 'memberships'">
+      Memberships
+    </button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div *ngIf="activeTab === 'overview'" class="space-y-12">
+    <!-- Core Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+        <p class="text-xs text-zinc-400">Applications</p>
+        <p class="text-2xl font-semibold text-zinc-100">{{ stats?.applications || 0 }}</p>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+        <p class="text-xs text-zinc-400">Roles</p>
+        <p class="text-2xl font-semibold text-zinc-100">{{ stats?.roles || 0 }}</p>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+        <p class="text-xs text-zinc-400">Users</p>
+        <p class="text-2xl font-semibold text-zinc-100">{{ stats?.users || 0 }}</p>
+      </div>
+      <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+        <p class="text-xs text-zinc-400">Pending Requests</p>
+        <p class="text-2xl font-semibold text-zinc-100">{{ stats?.pendingRequests || 0 }}</p>
+      </div>
+    </div>
+
+    <!-- Pending Requests -->
+    <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+      <h2 class="text-sm uppercase tracking-wide text-zinc-400 mb-4">Pending Access Requests</h2>
+
+      <table class="min-w-full text-sm text-left">
+        <thead class="border-b border-zinc-800">
+          <tr>
+            <th class="px-4 py-3 text-zinc-400">User</th>
+            <th class="px-4 py-3 text-zinc-400">Application</th>
+            <th class="px-4 py-3 text-zinc-400">Role</th>
+            <th class="px-4 py-3 text-zinc-400">Requested</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let r of pendingRequests"
+            class="border-b border-zinc-800 hover:bg-zinc-800/50"
+          >
+            <td class="px-4 py-3 text-zinc-100">{{ r.user_email }}</td>
+            <td class="px-4 py-3 text-zinc-300">{{ r.app_name }}</td>
+            <td class="px-4 py-3 text-zinc-300">{{ r.role_name }}</td>
+            <td class="px-4 py-3 text-zinc-500">{{ r.created_at | date : 'mediumDate' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- APPLICATIONS -->
+  <div *ngIf="activeTab === 'apps'" class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+    <h2 class="text-sm uppercase tracking-wide text-zinc-400 mb-4">Applications</h2>
+    <table class="min-w-full text-sm text-left">
+      <thead class="border-b border-zinc-800">
+        <tr>
+          <th class="px-4 py-3 text-zinc-400">Name</th>
+          <th class="px-4 py-3 text-zinc-400">Slug</th>
+          <th class="px-4 py-3 text-zinc-400">Owner</th>
+          <th class="px-4 py-3 text-zinc-400">Created On</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let app of apps" class="border-b border-zinc-800">
+          <td class="px-4 py-3 text-zinc-100">{{ app.name }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ app.slug }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ app.poc_user_email || '—' }}</td>
+          <td class="px-4 py-3 text-zinc-500">{{ app.created_at | date : 'mediumDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ROLES -->
+  <div *ngIf="activeTab === 'roles'" class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+    <h2 class="text-sm uppercase tracking-wide text-zinc-400 mb-4">Roles</h2>
+    <table class="min-w-full text-sm text-left">
+      <thead class="border-b border-zinc-800">
+        <tr>
+          <th class="px-4 py-3 text-zinc-400">Role</th>
+          <th class="px-4 py-3 text-zinc-400">Application</th>
+          <th class="px-4 py-3 text-zinc-400">Members</th>
+          <th class="px-4 py-3 text-zinc-400">Created On</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let role of roles" class="border-b border-zinc-800">
+          <td class="px-4 py-3 text-zinc-100">{{ role.role_name }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ role.app_name }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ role.members_count }}</td>
+          <td class="px-4 py-3 text-zinc-500">{{ role.created_at | date : 'mediumDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REQUESTS -->
+  <div *ngIf="activeTab === 'requests'" class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
+    <h2 class="text-sm uppercase tracking-wide text-zinc-400 mb-4">All Requests</h2>
+    <table class="min-w-full text-sm text-left">
+      <thead class="border-b border-zinc-800">
+        <tr>
+          <th class="px-4 py-3 text-zinc-400">User</th>
+          <th class="px-4 py-3 text-zinc-400">App</th>
+          <th class="px-4 py-3 text-zinc-400">Role</th>
+          <th class="px-4 py-3 text-zinc-400">Status</th>
+          <th class="px-4 py-3 text-zinc-400">Justification</th>
+          <th class="px-4 py-3 text-zinc-400">Requested</th>
+          <th class="px-4 py-3 text-zinc-400">Updated By</th>
+          <th class="px-4 py-3 text-zinc-400">Updated On</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let r of requests" class="border-b border-zinc-800">
+          <td class="px-4 py-3 text-zinc-100">{{ r.user_email }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ r.app_name }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ r.role_name }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ r.status }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ r.justification || '—' }}</td>
+          <td class="px-4 py-3 text-zinc-500">{{ r.created_at | date : 'mediumDate' }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ r.updated_by_email || '—' }}</td>
+          <td class="px-4 py-3 text-zinc-500">{{ r.updated_at | date : 'mediumDate' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MEMBERSHIPS -->
+  <div
+    *ngIf="activeTab === 'memberships'"
+    class="bg-zinc-900 border border-zinc-800 rounded-lg p-5"
+  >
+    <h2 class="text-sm uppercase tracking-wide text-zinc-400 mb-4">Memberships</h2>
+    <table class="min-w-full text-sm text-left">
+      <thead class="border-b border-zinc-800">
+        <tr>
+          <th class="px-4 py-3 text-zinc-400">User</th>
+          <th class="px-4 py-3 text-zinc-400">Application</th>
+          <th class="px-4 py-3 text-zinc-400">Role</th>
+          <th class="px-4 py-3 text-zinc-400">Created By</th>
+          <th class="px-4 py-3 text-zinc-400">Created On</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let m of memberships" class="border-b border-zinc-800">
+          <td class="px-4 py-3 text-zinc-100">{{ m.user_email }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ m.app_name }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ m.role_name }}</td>
+          <td class="px-4 py-3 text-zinc-500">{{ m.created_at | date : 'mediumDate' }}</td>
+          <td class="px-4 py-3 text-zinc-300">{{ m.created_by_email || '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

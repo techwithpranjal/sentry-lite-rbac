@@ -2,36 +2,36 @@
   <h1 class="text-lg font-semibold mb-8 tracking-wide">Sentry Lite</h1>
 
   <nav class="space-y-2 text-sm">
-    <a
-      routerLink="/dashboard"
-      routerLinkActive="bg-zinc-800 text-white"
-      class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300"
-    >
+    <a routerLink="/dashboard"
+       routerLinkActive="bg-zinc-800 text-white"
+       class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300">
       Dashboard
     </a>
 
-    <a
-      routerLink="/apps"
-      routerLinkActive="bg-zinc-800 text-white"
-      class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300"
-    >
+    <a routerLink="/apps"
+       routerLinkActive="bg-zinc-800 text-white"
+       class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300">
       Apps
     </a>
 
-    <a
-      routerLink="/roles"
-      routerLinkActive="bg-zinc-800 text-white"
-      class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300"
-    >
+    <a routerLink="/roles"
+       routerLinkActive="bg-zinc-800 text-white"
+       class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300">
       Roles
     </a>
 
-    <a
-      routerLink="/access"
-      routerLinkActive="bg-zinc-800 text-white"
-      class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300"
-    >
+    <a routerLink="/access"
+       routerLinkActive="bg-zinc-800 text-white"
+       class="block px-3 py-2 rounded hover:bg-zinc-800 text-zinc-300">
       Access
+    </a>
+
+    <!-- ADMIN -->
+    <a *ngIf="authService.isAdmin"
+       routerLink="/admin"
+       routerLinkActive="bg-zinc-800 text-white"
+       class="block px-3 py-2 rounded hover:bg-zinc-800 text-cyan-400 font-medium">
+      Admin
     </a>
   </nav>
 </aside>

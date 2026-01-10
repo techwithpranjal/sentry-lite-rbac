@@ -7,12 +7,12 @@ from datetime import datetime
 class UserRegister(BaseModel):
     email: EmailStr
     password: str
-    
 
 class UserRead(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
+    is_super_admin: bool
 
 # ---- Auth schemas ----
 
@@ -103,21 +103,25 @@ class RequestUpdate(BaseModel):
 
 # ---- Admin schema ----
 
-class AdminOverview(BaseModel):
-    users_count: int
-    apps_count: int
-    roles_count: int
-    memberships_count: int
-    pending_requests: int
+class AdminStats(BaseModel):
+    users: int
+    applications: int
+    roles: int
+    memberships: int
+    pendingRequests: int
 
-class AdminAppRead(BaseModel):
-    app_id: int
-    name: str
-    slug: str
-    owner_email: str
-    roles_count: int
-    members_count: int
-    created_at: datetime
+    appsWithoutOwner: int
+    rolesWithoutMembers: int
+    oldestPendingRequestDays: Optional[int]
+
+    requestsLast24h: int
+    approvalsLast24h: int
+    membershipsLast24h: int
+    appsLast7d: int
+
+class AdminOverview(BaseModel):
+    stats: AdminStats
+    pending_requests: list
 
 class AdminRoleRead(BaseModel):
     role_id: int
@@ -133,16 +137,12 @@ class AdminRequestRead(BaseModel):
     app_name: str
     role_name: str
     status: str
+    justification: Optional[str]
     created_at: datetime
+    updated_by: Optional[str]
+    updated_at: Optional[datetime]
 
 
-class AdminMembershipRead(BaseModel):
-    membership_id: int
-    user_email: str
-    app_name: str
-    role_name: str
-    granted_by: str | None
-    granted_at: datetime
 
 
 

@@ -217,75 +217,117 @@ UPDATE_REQUEST_STATUS = text("""
 
 # Admin Queries
 
-from sqlalchemy import text
-
 ADMIN_OVERVIEW = text("""
 SELECT
-  (SELECT COUNT(*) FROM user) AS users_count,
-  (SELECT COUNT(*) FROM app) AS apps_count,
-  (SELECT COUNT(*) FROM role) AS roles_count,
-  (SELECT COUNT(*) FROM membership) AS memberships_count,
-  (SELECT COUNT(*) FROM request WHERE status = 'pending') AS pending_requests
+  (SELECT COUNT(*) FROM user) AS users,
+  (SELECT COUNT(*) FROM app) AS applications,
+  (SELECT COUNT(*) FROM role) AS roles,
+  (SELECT COUNT(*) FROM membership) AS memberships,
+  (SELECT COUNT(*) FROM request WHERE status = 'pending') AS pending_requests,
+
+  (SELECT COUNT(*) FROM app WHERE poc_user_email IS NULL) AS apps_without_owner,
+
+  (SELECT COUNT(*) FROM role r
+     LEFT JOIN membership m ON r.id = m.role_id
+     WHERE m.id IS NULL) AS roles_without_members,
+
+  (SELECT CAST(
+      JULIANDAY('now') - JULIANDAY(MIN(created_at))
+    AS INT)
+    FROM request
+    WHERE status = 'pending'
+  ) AS oldest_pending_request_days,
+
+  -- Activity Snapshot
+  (SELECT COUNT(*) FROM request
+     WHERE created_at >= DATETIME('now', '-1 day')
+  ) AS requests_last_24h,
+
+  (SELECT COUNT(*) FROM request
+     WHERE status = 'approved'
+       AND updated_at >= DATETIME('now', '-1 day')
+  ) AS approvals_last_24h,
+
+  (SELECT COUNT(*) FROM membership
+     WHERE created_at >= DATETIME('now', '-1 day')
+  ) AS memberships_last_24h,
+
+  (SELECT COUNT(*) FROM app
+     WHERE created_at >= DATETIME('now', '-7 day')
+  ) AS apps_last_7d
+""")
+
+GET_PENDING_REQUESTS = text("""
+    SELECT
+    r.id,
+    r.user_email,
+    a.name AS app_name,
+    ro.name AS role_name,
+    r.status,
+    r.created_at
+    FROM request r
+    JOIN app a ON r.app_id = a.id
+    JOIN role ro ON r.role_id = ro.id
+    WHERE r.status = 'pending'
+    ORDER BY r.created_at DESC
+    LIMIT 10;
 """)
 
 ADMIN_APPS = text("""
-SELECT
-  a.id AS app_id,
-  a.name,
-  a.slug,
-  a.poc_user_email AS owner_email,
-  COUNT(DISTINCT r.id) AS roles_count,
-  COUNT(DISTINCT m.id) AS members_count,
-  a.created_at
-FROM app a
-LEFT JOIN role r ON r.app_id = a.id
-LEFT JOIN membership m ON m.app_id = a.id
-GROUP BY a.id
-ORDER BY a.created_at DESC
+SELECT id, name, slug, description, poc_user_email, created_at
+FROM app
+ORDER BY created_at DESC;
 """)
 
 ADMIN_ROLES = text("""
 SELECT
-  r.id AS role_id,
-  r.name AS role_name,
-  a.name AS app_name,
-  a.slug AS app_slug,
-  COUNT(m.id) AS members_count,
-  r.created_at
+  r.id            AS role_id,
+  r.name          AS role_name,
+  a.name          AS app_name,
+  a.slug          AS app_slug,
+  COUNT(m.id)     AS members_count,
+  r.created_at    AS created_at
 FROM role r
-JOIN app a ON a.id = r.app_id
-LEFT JOIN membership m ON m.role_id = r.id
-GROUP BY r.id
-ORDER BY r.created_at DESC
+JOIN app a ON r.app_id = a.id
+LEFT JOIN membership m ON r.id = m.role_id
+GROUP BY r.id, a.name, a.slug
+ORDER BY r.created_at DESC;
 """)
 
 ADMIN_REQUESTS = text("""
 SELECT
-  r.id AS request_id,
-  u.email AS user_email,
-  a.name AS app_name,
-  ro.name AS role_name,
-  r.status,
-  r.created_at
+  r.id            AS request_id,
+  r.user_email    AS user_email,
+
+  a.name          AS app_name,
+  ro.name         AS role_name,
+
+  r.status        AS status,
+  r.justification AS justification,
+
+  r.created_at    AS created_at,
+  r.updated_by    AS updated_by,
+  r.updated_at    AS updated_at
 FROM request r
-JOIN user u ON u.id = r.user_id
-JOIN app a ON a.id = r.app_id
-JOIN role ro ON ro.id = r.role_id
-ORDER BY r.created_at DESC
+JOIN app a  ON r.app_id = a.id
+JOIN role ro ON r.role_id = ro.id
+ORDER BY r.created_at DESC;
 """)
 
 ADMIN_MEMBERSHIPS = text("""
 SELECT
-  m.id AS membership_id,
-  m.user_email,
-  a.name AS app_name,
-  r.name AS role_name,
-  m.created_by AS granted_by,
-  m.created_at AS granted_at
+  m.id            AS id,
+  m.user_email    AS user_email,
+  m.app_id        AS app_id,
+  a.name          AS app_name,
+  m.role_id       AS role_id,
+  r.name          AS role_name,
+  m.created_at    AS created_at,
+  m.created_by    AS created_by
 FROM membership m
-JOIN app a ON a.id = m.app_id
-JOIN role r ON r.id = m.role_id
-ORDER BY m.created_at DESC
+JOIN app a  ON m.app_id = a.id
+JOIN role r ON m.role_id = r.id
+ORDER BY m.created_at DESC;
 """)
 
 # Additional Queries

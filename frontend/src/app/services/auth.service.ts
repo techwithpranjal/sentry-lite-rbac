@@ -7,6 +7,7 @@ import { tap } from 'rxjs';
 export class AuthService {
   private apiUrl = environment.apiBaseUrl;
   private TOKEN_KEY = 'access_token';
+  private _isAdmin = false;
 
   constructor(private http: HttpClient) {}
 
@@ -21,10 +22,7 @@ export class AuthService {
   }
 
   register(email: string, password: string) {
-    return this.http.post(
-      `${environment.apiBaseUrl}/auth/register`,
-      { email, password }
-    );
+    return this.http.post(`${environment.apiBaseUrl}/auth/register`, { email, password });
   }
 
   getToken() {
@@ -40,10 +38,20 @@ export class AuthService {
   }
 
   getIdentity() {
-    return this.http.get<any>(`${this.apiUrl}/auth/identity`, {
-      headers: {
-        Authorization: `Bearer ${this.getToken()}`
-      }
-    });
+    return this.http
+      .get<any>(`${this.apiUrl}/auth/identity`, {
+        headers: {
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+      })
+      .pipe(
+        tap((res) => {
+          this._isAdmin = !!res.user?.is_admin;
+        })
+      );
+  }
+
+  isAdmin() {
+    return this._isAdmin;
   }
 }

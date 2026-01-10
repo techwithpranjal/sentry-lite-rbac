@@ -39,7 +39,8 @@ def register_user(user: UserRegister, session: Session = Depends(get_session)):
     new_user = User(
         id=row.id,
         email=row.email,
-        created_at=row.created_at
+        created_at=row.created_at,
+        is_super_admin=row.is_super_admin
     )
     return new_user
 
@@ -62,7 +63,8 @@ def login_user(login_req: LoginRequest, session: Session = Depends(get_session))
     access_token = create_access_token(
         data={
             "id": str(user.id),       
-            "email": user.email        
+            "email": user.email,
+            "is_super_admin": user.is_super_admin        
         },
         expires_delta=access_token_expires,
     )
@@ -78,7 +80,8 @@ def get_identity(session: Session = Depends(get_session), current_user: dict = D
 
     user_data = {
         "id": current_user["sub"]["id"],
-        "email": current_user["sub"]["email"]
+        "email": current_user["sub"]["email"],
+        "is_super_admin": current_user["sub"]["is_super_admin"]
     }
 
     owned_apps_result = session.exec(
