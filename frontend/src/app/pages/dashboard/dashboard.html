@@ -6,30 +6,29 @@
     <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">Quick Actions</h2>
 
     <div class="flex flex-wrap gap-3">
-      <button
-        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
+      <!-- Manage My Apps -->
+      <a
+        routerLink="/apps"
+        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition inline-block"
       >
         Manage my apps
-      </button>
+      </a>
 
-      <button
-        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
+      <!-- Browse Roles -->
+      <a
+        routerLink="/roles"
+        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition inline-block"
       >
         Browse roles
-      </button>
+      </a>
 
-      <button
-        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
-        *ngIf="identity?.owned_apps?.length > 0"
-      >
-        Manage members
-      </button>
-
-      <button
-        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition"
+      <!-- View My Requests -->
+      <a
+        routerLink="/access"
+        class="px-4 py-2 rounded-md bg-zinc-800 text-zinc-200 text-sm hover:bg-zinc-700 transition inline-block"
       >
         View my requests
-      </button>
+      </a>
     </div>
   </div>
 

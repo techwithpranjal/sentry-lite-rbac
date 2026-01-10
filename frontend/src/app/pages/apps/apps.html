@@ -57,12 +57,11 @@
 
   <!-- Tabs -->
   <div class="flex gap-4 border-b border-zinc-800 text-sm">
-    <button (click)="setTab('all')" [class.text-cyan-400]="activeTab === 'all'" class="pb-2">
-      All Applications
-    </button>
-
     <button (click)="setTab('owned')" [class.text-cyan-400]="activeTab === 'owned'" class="pb-2">
       My Apps
+    </button>
+    <button (click)="setTab('all')" [class.text-cyan-400]="activeTab === 'all'" class="pb-2">
+      All Applications
     </button>
   </div>
 
@@ -71,6 +70,54 @@
 
   <!-- Error -->
   <p *ngIf="error" class="text-red-400">Failed to load applications.</p>
+
+  <!-- Owned Apps -->
+  <div class="mt-8" *ngIf="activeTab === 'owned'">
+    <div *ngIf="ownedApps.length === 0" class="text-zinc-500 text-sm">
+      You don’t own any applications yet.
+    </div>
+
+    <div *ngIf="ownedApps.length" class="overflow-x-auto border border-zinc-800 rounded-lg">
+      <table class="min-w-full text-sm text-left">
+        <thead class="bg-zinc-900 border-b border-zinc-800">
+          <tr>
+            <th class="px-4 py-3 text-zinc-400">Name</th>
+            <th class="px-4 py-3 text-zinc-400">Slug</th>
+            <th class="px-4 py-3 text-zinc-400">Description</th>
+            <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr
+            *ngFor="let app of ownedApps"
+            class="border-b border-zinc-800 hover:bg-zinc-900 transition"
+          >
+            <td class="px-4 py-3 text-zinc-100 font-medium">
+              {{ app.name }}
+            </td>
+
+            <td class="px-4 py-3 text-zinc-400">
+              {{ app.slug }}
+            </td>
+
+            <td class="px-4 py-3 text-zinc-500">
+              {{ app.description || '—' }}
+            </td>
+
+            <td class="px-4 py-3 text-right">
+              <button
+                class="text-cyan-400 hover:text-cyan-300 text-xs font-medium"
+                (click)="viewRoles(app.id)"
+              >
+                View Roles →
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
   <!-- All Applications -->
   <div class="mt-8" *ngIf="activeTab === 'all'">
@@ -105,54 +152,6 @@
 
             <td class="px-4 py-3 text-zinc-400">
               {{ app.poc_user_email }}
-            </td>
-
-            <td class="px-4 py-3 text-right">
-              <button
-                class="text-cyan-400 hover:text-cyan-300 text-xs font-medium"
-                (click)="viewRoles(app.id)"
-              >
-                View Roles →
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Owned Apps -->
-  <div class="mt-8" *ngIf="activeTab === 'owned'">
-    <div *ngIf="ownedApps.length === 0" class="text-zinc-500 text-sm">
-      You don’t own any applications yet.
-    </div>
-
-    <div *ngIf="ownedApps.length" class="overflow-x-auto border border-zinc-800 rounded-lg">
-      <table class="min-w-full text-sm text-left">
-        <thead class="bg-zinc-900 border-b border-zinc-800">
-          <tr>
-            <th class="px-4 py-3 text-zinc-400">Name</th>
-            <th class="px-4 py-3 text-zinc-400">Slug</th>
-            <th class="px-4 py-3 text-zinc-400">Description</th>
-            <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <tr
-            *ngFor="let app of ownedApps"
-            class="border-b border-zinc-800 hover:bg-zinc-900 transition"
-          >
-            <td class="px-4 py-3 text-zinc-100 font-medium">
-              {{ app.name }}
-            </td>
-
-            <td class="px-4 py-3 text-zinc-400">
-              {{ app.slug }}
-            </td>
-
-            <td class="px-4 py-3 text-zinc-500">
-              {{ app.description || '—' }}
             </td>
 
             <td class="px-4 py-3 text-right">

@@ -14,7 +14,7 @@ type Tab = 'all' | 'owned';
   templateUrl: './apps.html',
 })
 export class AppsComponent implements OnInit {
-  activeTab: Tab = 'all';
+  activeTab: Tab = 'owned';
 
   allApps: any[] = [];
   ownedApps: any[] = [];
