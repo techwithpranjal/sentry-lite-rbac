@@ -28,13 +28,11 @@
     </button>
   </div>
 
-  <!-- My Requests -->
+  <!-- ================= MY REQUESTS ================= -->
   <div *ngIf="activeTab === 'requests'" class="space-y-4">
-    <h2 class="text-sm uppercase tracking-wide text-zinc-400">Access Requests You’ve Raised</h2>
+    <h2 class="text-sm uppercase tracking-wide text-zinc-400">Access Requests Raised By You</h2>
 
     <p *ngIf="loading" class="text-zinc-400 text-sm">Loading requests…</p>
-
-    <p *ngIf="error" class="text-red-400 text-sm">Failed to load requests.</p>
 
     <div *ngIf="!loading && myRequests.length === 0" class="text-zinc-500">
       You haven’t raised any access requests yet.
@@ -46,8 +44,11 @@
           <tr>
             <th class="px-4 py-3 text-zinc-400">Application</th>
             <th class="px-4 py-3 text-zinc-400">Role</th>
+            <th class="px-4 py-3 text-zinc-400">Justification</th>
             <th class="px-4 py-3 text-zinc-400">Status</th>
             <th class="px-4 py-3 text-zinc-400">Requested</th>
+            <th class="px-4 py-3 text-zinc-400">Updated</th>
+            <th class="px-4 py-3 text-zinc-400">Updated By</th>
           </tr>
         </thead>
 
@@ -56,14 +57,11 @@
             *ngFor="let r of myRequests"
             class="border-b border-zinc-800 hover:bg-zinc-900 transition"
           >
-            <td class="px-4 py-3 text-zinc-100">
-              {{ r.app_name || r.app_id }}
+            <td class="px-4 py-3 text-zinc-100">{{ r.app_name }}</td>
+            <td class="px-4 py-3 text-zinc-300">{{ r.role_name }}</td>
+            <td class="px-4 py-3 text-zinc-400 max-w-xs truncate">
+              {{ r.justification || '—' }}
             </td>
-
-            <td class="px-4 py-3 text-zinc-300">
-              {{ r.role_name || r.role_id }}
-            </td>
-
             <td class="px-4 py-3">
               <span
                 class="text-xs font-medium px-2 py-1 rounded"
@@ -76,9 +74,14 @@
                 {{ r.status }}
               </span>
             </td>
-
             <td class="px-4 py-3 text-zinc-500">
-              {{ r.created_at | date : 'mediumDate' }}
+              {{ r.created_at }}
+            </td>
+            <td class="px-4 py-3 text-zinc-500">
+              {{ r.updated_at }}
+            </td>
+            <td class="px-4 py-3 text-zinc-500">
+              {{ r.updated_by }}
             </td>
           </tr>
         </tbody>
@@ -86,13 +89,11 @@
     </div>
   </div>
 
-  <!-- My Approvals -->
+  <!-- ================= APPROVALS ================= -->
   <div *ngIf="activeTab === 'approvals'" class="space-y-4">
     <h2 class="text-sm uppercase tracking-wide text-zinc-400">Requests Awaiting Your Approval</h2>
 
     <p *ngIf="loading" class="text-zinc-400 text-sm">Loading approvals…</p>
-
-    <p *ngIf="error" class="text-red-400 text-sm">Failed to load approvals.</p>
 
     <div *ngIf="!loading && myApprovals.length === 0" class="text-zinc-500">
       No pending approvals.
@@ -105,6 +106,8 @@
             <th class="px-4 py-3 text-zinc-400">User</th>
             <th class="px-4 py-3 text-zinc-400">Application</th>
             <th class="px-4 py-3 text-zinc-400">Role</th>
+            <th class="px-4 py-3 text-zinc-400">Justification</th>
+            <th class="px-4 py-3 text-zinc-400">Requested</th>
             <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
           </tr>
         </thead>
@@ -114,18 +117,15 @@
             *ngFor="let r of myApprovals"
             class="border-b border-zinc-800 hover:bg-zinc-900 transition"
           >
-            <td class="px-4 py-3 text-zinc-100">
-              {{ r.user_email }}
+            <td class="px-4 py-3 text-zinc-100">{{ r.user_email }}</td>
+            <td class="px-4 py-3 text-zinc-300">{{ r.app_name }}</td>
+            <td class="px-4 py-3 text-zinc-300">{{ r.role_name }}</td>
+            <td class="px-4 py-3 text-zinc-400 max-w-xs truncate">
+              {{ r.justification || '—' }}
             </td>
-
-            <td class="px-4 py-3 text-zinc-300">
-              {{ r.app_name || r.app_id }}
+            <td class="px-4 py-3 text-zinc-500">
+              {{ r.created_at | date : 'mediumDate' }}
             </td>
-
-            <td class="px-4 py-3 text-zinc-300">
-              {{ r.role_name || r.role_id }}
-            </td>
-
             <td class="px-4 py-3 text-right space-x-2">
               <button
                 class="text-green-400 hover:text-green-300 text-xs font-medium"
@@ -133,7 +133,6 @@
               >
                 Approve
               </button>
-
               <button
                 class="text-red-400 hover:text-red-300 text-xs font-medium"
                 (click)="reject(r.id)"
@@ -147,13 +146,11 @@
     </div>
   </div>
 
-  <!-- My Memberships -->
+  <!-- ================= MEMBERSHIPS ================= -->
   <div *ngIf="activeTab === 'memberships'" class="space-y-4">
-    <h2 class="text-sm uppercase tracking-wide text-zinc-400">My Memberships</h2>
+    <h2 class="text-sm uppercase tracking-wide text-zinc-400">Your Active Memberships</h2>
 
     <p *ngIf="loading" class="text-zinc-400 text-sm">Loading memberships…</p>
-
-    <p *ngIf="error" class="text-red-400 text-sm">Failed to load memberships.</p>
 
     <div *ngIf="!loading && myMemberships.length === 0" class="text-zinc-500">
       You are not a member of any roles yet.
@@ -166,7 +163,7 @@
             <th class="px-4 py-3 text-zinc-400">Application</th>
             <th class="px-4 py-3 text-zinc-400">Role</th>
             <th class="px-4 py-3 text-zinc-400">Granted On</th>
-            <th class="px-4 py-3 text-zinc-400">Created By</th>
+            <th class="px-4 py-3 text-zinc-400">Granted By</th>
           </tr>
         </thead>
 
@@ -175,20 +172,13 @@
             *ngFor="let m of myMemberships"
             class="border-b border-zinc-800 hover:bg-zinc-900 transition"
           >
-            <td class="px-4 py-3 text-zinc-100">
-              {{ m.app_name || m.app_id }}
-            </td>
-
-            <td class="px-4 py-3 text-cyan-400">
-              {{ m.role_name || m.role_id }}
-            </td>
-
+            <td class="px-4 py-3 text-zinc-100">{{ m.app_name }}</td>
+            <td class="px-4 py-3 text-cyan-400">{{ m.role_name }}</td>
             <td class="px-4 py-3 text-zinc-500">
               {{ m.created_at | date : 'mediumDate' }}
             </td>
-
             <td class="px-4 py-3 text-zinc-500">
-              {{ m.created_by }}
+              {{ m.created_by || 'System' }}
             </td>
           </tr>
         </tbody>

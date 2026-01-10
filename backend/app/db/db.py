@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, create_engine, Session
 from app.core.settings import settings
-from app.db.seed import seed_db
+from app.db.seed import seed
 
 engine = create_engine(
     settings.DATABASE_URL,
@@ -12,7 +12,7 @@ def init_db():
     SQLModel.metadata.create_all(engine)
     with Session(engine) as session:
         if settings.ENV == "development":
-            seed_db(session)
+            seed(session)
 
 def get_session():
     with Session(engine) as session:

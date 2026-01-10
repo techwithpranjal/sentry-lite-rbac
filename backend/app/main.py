@@ -8,13 +8,14 @@ from app.routers.apps import router as apps_router
 from app.routers.roles import router as roles_router
 from app.routers.memberships import router as memberships_router
 from app.routers.requests import router as requests_router
+from app.routers.admin import router as admin_router
 from app.core.settings import settings
 
 app = FastAPI(title="Sentry Lite")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:57740"],
+    allow_origins=["http://localhost:4200"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,5 +35,6 @@ app.include_router(apps_router)
 app.include_router(roles_router)
 app.include_router(memberships_router)
 app.include_router(requests_router)
+app.include_router(admin_router)
   
     

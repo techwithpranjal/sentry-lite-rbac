@@ -47,5 +47,12 @@ def get_logged_user(token: str = Depends(oauth2_scheme)) -> Optional[dict]:
         return {"sub": user_data}
         
     except JWTError as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
-    
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")   
+
+def require_admin(current_user: dict = Depends(get_logged_user)):
+    if not current_user["sub"].get("is_super_admin"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    return current_user

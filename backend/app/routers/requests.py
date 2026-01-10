@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from sqlmodel import Session
 
 from app.schemas import RequestRead, RequestCreate, RequestUpdate
-from app.queries import GET_ROLE_BY_ID, GET_REQUEST_BY_USER_ID_AND_ROLE_ID, INSERT_REQUEST, GET_REQUESTS_BY_USER_ID, GET_REQUESTS_BY_REQUEST_ID, GET_REQUESTS_BY_POC, UPDATE_REQUEST_STATUS, INSERT_MEMBERSHIP
+from app.queries import GET_ROLE_BY_ID, GET_REQUEST_BY_USER_EMAIL_AND_ROLE_ID, INSERT_REQUEST, GET_REQUESTS_BY_USER_EMAIL, GET_REQUESTS_BY_REQUEST_ID, GET_REQUESTS_BY_POC, UPDATE_REQUEST_STATUS, INSERT_MEMBERSHIP
 from app.db.db import get_session
 from app.core.security import get_logged_user
 
@@ -26,8 +26,8 @@ def create_request(request: RequestCreate, session: Session = Depends(get_sessio
         )
 
     existing_request = session.exec(
-        GET_REQUEST_BY_USER_ID_AND_ROLE_ID.params({
-            "user_id": int(current_user["sub"]["id"]),
+        GET_REQUEST_BY_USER_EMAIL_AND_ROLE_ID.params({
+            "email": current_user["sub"]["email"],
             "role_id": request.role_id
         })).first()
     
@@ -46,7 +46,7 @@ def create_request(request: RequestCreate, session: Session = Depends(get_sessio
     session.exec(
         INSERT_REQUEST.params(
             {
-                "user_id": current_user["sub"]["id"],
+                "user_email": current_user["sub"]["email"],
                 "app_id": request.app_id,
                 "role_id": request.role_id,
                 "justification": request.justification,
@@ -57,15 +57,15 @@ def create_request(request: RequestCreate, session: Session = Depends(get_sessio
     session.commit()
 
     result = session.exec(
-        GET_REQUEST_BY_USER_ID_AND_ROLE_ID.params({
-            "user_id": current_user["sub"]["id"],
+        GET_REQUEST_BY_USER_EMAIL_AND_ROLE_ID.params({
+            "email": current_user["sub"]["email"],
             "role_id": request.role_id
         })
     ).first()
 
     new_request = RequestRead(
         id=result.id,
-        user_id=result.user_id,
+        user_email=result.user_email,
         app_id=result.app_id,
         app_name=result.app_name,
         role_id=result.role_id,
@@ -83,14 +83,14 @@ def get_my_requests(session: Session = Depends(get_session), current_user: dict 
     """Get all membership requests for the logged in user."""
 
     results = session.exec(
-        GET_REQUESTS_BY_USER_ID.params({"user_id": current_user["sub"]["id"]})
+        GET_REQUESTS_BY_USER_EMAIL.params({"email": current_user["sub"]["email"]})
     )
     rows = results.fetchall()
 
     requests = [
         RequestRead(
             id=row.id,
-            user_id=row.user_id,
+            user_email=row.user_email,
             app_id=row.app_id,
             app_name=row.app_name,
             role_id=row.role_id,
@@ -118,7 +118,7 @@ def get_my_approvals(session: Session = Depends(get_session), current_user: dict
     requests = [
         RequestRead(
             id=row.id,
-            user_id=row.user_id,
+            user_email=row.user_email,
             app_id=row.app_id,
             app_name=row.app_name,
             role_id=row.role_id,
@@ -172,7 +172,7 @@ def update_request(payload: RequestUpdate, session: Session = Depends(get_sessio
             {
                 "request_id": payload.request_id,
                 "status": payload.status,
-                "updated_by": current_user["sub"]["id"],
+                "updated_by": current_user["sub"]["email"],
                 "updated_at": datetime.utcnow()
             }
         )
@@ -185,7 +185,7 @@ def update_request(payload: RequestUpdate, session: Session = Depends(get_sessio
 
     updated_request = RequestRead(
         id=updated_req.id,
-        user_id=updated_req.user_id,
+        user_email=updated_req.user_email,
         app_id=updated_req.app_id,
         app_name=updated_req.app_name,
         role_id=updated_req.role_id,

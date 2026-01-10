@@ -125,11 +125,10 @@ DELETE_MEMBERSHIP_BY_ID = text("""
 
 # Request Queries
 
-GET_REQUEST_BY_USER_ID_AND_ROLE_ID = text("""
+GET_REQUEST_BY_USER_EMAIL_AND_ROLE_ID = text("""
     SELECT
         r.id,
-        r.user_id,
-        u.email AS user_email,
+        r.user_email,
         r.app_id,
         a.name AS app_name,
         r.role_id,
@@ -142,20 +141,19 @@ GET_REQUEST_BY_USER_ID_AND_ROLE_ID = text("""
     FROM request r
     JOIN app a ON a.id = r.app_id
     JOIN role ro ON ro.id = r.role_id
-    JOIN user u ON u.id = r.user_id
-    WHERE r.user_id = :user_id
+    WHERE r.user_email = :email
       AND r.role_id = :role_id
 """)
 
 INSERT_REQUEST = text("""
-    INSERT INTO request (user_id, app_id, role_id, justification, status, created_at)
-    VALUES (:user_id, :app_id, :role_id, :justification, 'pending', :created_at)
+    INSERT INTO request (user_email, app_id, role_id, justification, status, created_at)
+    VALUES (:user_email, :app_id, :role_id, :justification, 'pending', :created_at)
 """)
 
-GET_REQUESTS_BY_USER_ID = text("""
+GET_REQUESTS_BY_USER_EMAIL = text("""
     SELECT
         r.id,
-        r.user_id,
+        r.user_email,
         r.app_id,
         a.name AS app_name,
         r.role_id,
@@ -168,15 +166,14 @@ GET_REQUESTS_BY_USER_ID = text("""
     FROM request r
     JOIN app a ON a.id = r.app_id
     JOIN role ro ON ro.id = r.role_id
-    WHERE r.user_id = :user_id
+    WHERE r.user_email = :email
     ORDER BY r.created_at DESC
 """)
 
 GET_REQUESTS_BY_REQUEST_ID = text("""
     SELECT
         r.id,
-        r.user_id,
-        u.email AS user_email,
+        r.user_email,
         r.app_id,
         a.name AS app_name,
         r.role_id,
@@ -189,15 +186,13 @@ GET_REQUESTS_BY_REQUEST_ID = text("""
     FROM request r
     JOIN app a ON a.id = r.app_id
     JOIN role ro ON ro.id = r.role_id
-    JOIN user u ON u.id = r.user_id
     WHERE r.id = :request_id
 """)
 
 GET_REQUESTS_BY_POC = text("""
     SELECT
         r.id,
-        r.user_id,
-        u.email AS user_email,
+        r.user_email,
         r.app_id,
         a.name AS app_name,
         r.role_id,
@@ -210,7 +205,6 @@ GET_REQUESTS_BY_POC = text("""
     FROM request r
     JOIN app a ON r.app_id = a.id
     JOIN role ro ON r.role_id = ro.id
-    JOIN user u ON r.user_id = u.id
     WHERE a.poc_user_email = :poc_user_email
     ORDER BY r.created_at DESC
 """)
@@ -220,3 +214,98 @@ UPDATE_REQUEST_STATUS = text("""
     WHERE id = :request_id
 """)
 
+
+# Admin Queries
+
+from sqlalchemy import text
+
+ADMIN_OVERVIEW = text("""
+SELECT
+  (SELECT COUNT(*) FROM user) AS users_count,
+  (SELECT COUNT(*) FROM app) AS apps_count,
+  (SELECT COUNT(*) FROM role) AS roles_count,
+  (SELECT COUNT(*) FROM membership) AS memberships_count,
+  (SELECT COUNT(*) FROM request WHERE status = 'pending') AS pending_requests
+""")
+
+ADMIN_APPS = text("""
+SELECT
+  a.id AS app_id,
+  a.name,
+  a.slug,
+  a.poc_user_email AS owner_email,
+  COUNT(DISTINCT r.id) AS roles_count,
+  COUNT(DISTINCT m.id) AS members_count,
+  a.created_at
+FROM app a
+LEFT JOIN role r ON r.app_id = a.id
+LEFT JOIN membership m ON m.app_id = a.id
+GROUP BY a.id
+ORDER BY a.created_at DESC
+""")
+
+ADMIN_ROLES = text("""
+SELECT
+  r.id AS role_id,
+  r.name AS role_name,
+  a.name AS app_name,
+  a.slug AS app_slug,
+  COUNT(m.id) AS members_count,
+  r.created_at
+FROM role r
+JOIN app a ON a.id = r.app_id
+LEFT JOIN membership m ON m.role_id = r.id
+GROUP BY r.id
+ORDER BY r.created_at DESC
+""")
+
+ADMIN_REQUESTS = text("""
+SELECT
+  r.id AS request_id,
+  u.email AS user_email,
+  a.name AS app_name,
+  ro.name AS role_name,
+  r.status,
+  r.created_at
+FROM request r
+JOIN user u ON u.id = r.user_id
+JOIN app a ON a.id = r.app_id
+JOIN role ro ON ro.id = r.role_id
+ORDER BY r.created_at DESC
+""")
+
+ADMIN_MEMBERSHIPS = text("""
+SELECT
+  m.id AS membership_id,
+  m.user_email,
+  a.name AS app_name,
+  r.name AS role_name,
+  m.created_by AS granted_by,
+  m.created_at AS granted_at
+FROM membership m
+JOIN app a ON a.id = m.app_id
+JOIN role r ON r.id = m.role_id
+ORDER BY m.created_at DESC
+""")
+
+# Additional Queries
+
+TRUNCATE_REQUEST_TABLE = text("""
+    DELETE FROM request
+""")
+
+TRUNCATE_MEMBERSHIP_TABLE = text("""
+    DELETE FROM membership
+""")
+
+TRUNCATE_ROLE_TABLE = text("""
+    DELETE FROM role
+""")
+
+TRUNCATE_APP_TABLE = text("""
+    DELETE FROM app
+""")
+
+TRUNCATE_USER_TABLE = text("""
+    DELETE FROM user
+""")

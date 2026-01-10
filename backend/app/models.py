@@ -8,14 +8,15 @@ class User(SQLModel, table=True):
     email: str = Field(index=True)
     password_hash: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
-
+    is_super_admin: bool = Field(default=False)
+    
 
 class App(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
     slug: str
     description: str
-    poc_user_email: int = Field(foreign_key="user.email")
+    poc_user_email: str = Field(foreign_key="user.email")
     created_at: datetime = Field(default_factory=datetime.utcnow)
     
 
@@ -29,7 +30,7 @@ class Role(SQLModel, table=True):
 
 class Membership(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_email: int = Field(foreign_key="user.email")
+    user_email: str = Field(foreign_key="user.email")
     app_id: int = Field(foreign_key="app.id")
     role_id: int = Field(foreign_key="role.id")
     created_at: datetime = Field(default_factory=datetime.utcnow)
@@ -38,13 +39,13 @@ class Membership(SQLModel, table=True):
 
 class Request(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id")
+    user_email: str = Field(foreign_key="user.email")
     app_id: int = Field(foreign_key="app.id")
     role_id: int = Field(foreign_key="role.id")
     status: str = Field(default="pending") 
     justification: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_by: Optional[int] = Field(default=None, foreign_key="user.id")
+    updated_by: Optional[str] = Field(default=None, foreign_key="user.email")
     updated_at: Optional[datetime] = None
 
     

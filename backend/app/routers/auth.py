@@ -2,7 +2,7 @@ from app.models import User
 from app.core.security import hash_password, verify_password, create_access_token, get_logged_user
 from app.schemas import UserRegister, UserRead, LoginRequest, TokenResponse, IdentityRead
 from app.db.db import get_session
-from app.queries import GET_USER_BY_EMAIL, INSERT_USER, GET_OWNED_APPS_BY_USER_EMAIL, GET_MEMBERSHIPS_BY_USER_EMAIL, GET_REQUESTS_BY_USER_ID
+from app.queries import GET_USER_BY_EMAIL, INSERT_USER, GET_OWNED_APPS_BY_USER_EMAIL, GET_MEMBERSHIPS_BY_USER_EMAIL, GET_REQUESTS_BY_USER_EMAIL
 from app.core.settings import settings
 
 from datetime import timedelta, datetime
@@ -116,13 +116,13 @@ def get_identity(session: Session = Depends(get_session), current_user: dict = D
     ]
 
     requests_result = session.exec(
-        GET_REQUESTS_BY_USER_ID.params({"user_id": current_user["sub"]["id"]})
+        GET_REQUESTS_BY_USER_EMAIL.params({"email": current_user["sub"]["email"]})
     ).fetchall()
 
     requests = [
         {
             "id": req.id,
-            "user_id": req.user_id,
+            "user_email": req.user_email,
             "app_id": req.app_id,
             "app_name": req.app_name,
             "role_id": req.role_id,
