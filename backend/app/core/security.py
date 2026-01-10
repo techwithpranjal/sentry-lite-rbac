@@ -14,9 +14,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 def hash_password(password: str) -> str:
     if password.startswith("$2b$"):
-        return password
-    password = password.encode("utf-8")[:settings.MAX_BCRYPT_BYTES].decode("utf-8", "ignore")
-    return bcrypt.hash(password)
+        return password  
+
+    password_bytes = password.encode("utf-8")
+    password_bytes = password_bytes[:72]
+
+    return bcrypt.hash(password_bytes)
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.verify(plain_password, hashed_password)
