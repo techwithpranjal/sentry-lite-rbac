@@ -39,7 +39,7 @@ def seed(session: Session):
     apps = [
         App(name="Revenue Analysis", slug="revenue-analysis", description="Revenue dashboards", poc_user_email="alice@corp.com"),
         App(name="Customer Insights", slug="customer-insights", description="Customer analytics", poc_user_email="charlie@corp.com"),
-        App(name="Design Factory", slug="design-factory", description="Design tooling", poc_user_email="grace@corp.com"),
+        App(name="Design Factory", slug="design-factory", description="Design tooling", poc_user_email="admin@sentry.io"),
         App(name="Access Audit Tool", slug="access-audit", description="Compliance audits", poc_user_email="david@corp.com"),
         App(name="Operations Console", slug="operations-console", description="Internal ops", poc_user_email="bob@corp.com"),
     ]
