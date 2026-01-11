@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from sqlmodel import Session, create_engine
+from sqlmodel import Session
 from app.models import User, App, Role, Membership, Request
 from app.queries import (
     TRUNCATE_USER_TABLE,
@@ -10,215 +10,150 @@ from app.queries import (
 )
 from app.core.security import hash_password
 
-DATABASE_URL = "sqlite:///db/sentry_lite.db"
-engine = create_engine(DATABASE_URL, echo=False)
 
+def seed(session: Session):
 
-def seed(session: Session = None):
-        
-        session.exec(TRUNCATE_REQUEST_TABLE)
-        session.exec(TRUNCATE_MEMBERSHIP_TABLE)
-        session.exec(TRUNCATE_ROLE_TABLE)
-        session.exec(TRUNCATE_APP_TABLE)
-        session.exec(TRUNCATE_USER_TABLE)
-        session.commit()
+    session.exec(TRUNCATE_REQUEST_TABLE)
+    session.exec(TRUNCATE_MEMBERSHIP_TABLE)
+    session.exec(TRUNCATE_ROLE_TABLE)
+    session.exec(TRUNCATE_APP_TABLE)
+    session.exec(TRUNCATE_USER_TABLE)
+    session.commit()
 
-        # USERS 
+    users = [
+        User(email="admin@sentry.io", password_hash=hash_password("admin123"), is_super_admin=True),
+        User(email="alice@corp.com", password_hash=hash_password("password")),
+        User(email="bob@corp.com", password_hash=hash_password("password")),
+        User(email="charlie@corp.com", password_hash=hash_password("password")),
+        User(email="david@corp.com", password_hash=hash_password("password")),
+        User(email="emma@corp.com", password_hash=hash_password("password")),
+        User(email="frank@corp.com", password_hash=hash_password("password")),
+        User(email="grace@corp.com", password_hash=hash_password("password")),
+        User(email="henry@corp.com", password_hash=hash_password("password")),
+        User(email="ivy@corp.com", password_hash=hash_password("password")),
+    ]
 
-        users = [
-            User(email="admin@sentry.io", password_hash=hash_password("admin123"), is_super_admin=True),
-            User(email="alice@corp.com", password_hash=hash_password("password")),
-            User(email="bob@corp.com", password_hash=hash_password("password")),
-            User(email="charlie@corp.com", password_hash=hash_password("password")),
-            User(email="david@corp.com", password_hash=hash_password("password")),
-            User(email="emma@corp.com", password_hash=hash_password("password")),
-            User(email="frank@corp.com", password_hash=hash_password("password")),
-            User(email="grace@corp.com", password_hash=hash_password("password")),
-            User(email="henry@corp.com", password_hash=hash_password("password")),
-            User(email="ivy@corp.com", password_hash=hash_password("password")),
-        ]
+    session.add_all(users)
+    session.commit()
 
-        session.add_all(users)
-        session.commit()
+    apps = [
+        App(
+            name="Revenue Analysis",
+            slug="revenue-analysis",
+            description="Revenue dashboards and forecasting",
+            poc_user_email="alice@corp.com",
+        ),
+        App(
+            name="Customer Insights",
+            slug="customer-insights",
+            description="Customer behavior and segmentation",
+            poc_user_email="charlie@corp.com",
+        ),
+        App(
+            name="Design Factory",
+            slug="design-factory",
+            description="Design systems and asset management",
+            poc_user_email="grace@corp.com",
+        ),
+        App(
+            name="Access Audit Tool",
+            slug="access-audit",
+            description="Audit logs and compliance reviews",
+            poc_user_email="david@corp.com",
+        ),
+        App(
+            name="Operations Console",
+            slug="operations-console",
+            description="Internal ops and support tooling",
+            poc_user_email="bob@corp.com",
+        ),
+    ]
 
-        user_map = {u.email: u for u in users}
+    session.add_all(apps)
+    session.commit()
 
-        # APPLICATIONS 
+    app_map = {a.slug: a for a in apps}
 
-        apps = [
-            App(
-                name="LTX",
-                slug="ltx",
-                description="Lifetime Value Experiments",
-                poc_user_email="admin@sentry.io",
-            ),
-            App(
-                name="Pulse",
-                slug="pulse",
-                description="Customer Sentiment Analytics",
-                poc_user_email="alice@corp.com",
-            ),
-            App(
-                name="Nova",
-                slug="nova",
-                description="A/B Experiment Platform",
-                poc_user_email="bob@corp.com",
-            ),
-            App(
-                name="Atlas",
-                slug="atlas",
-                description="Enterprise Reporting Suite",
-                poc_user_email="charlie@corp.com",
-            ),
-            App(
-                name="Beacon",
-                slug="beacon",
-                description="Observability & Alerts",
-                poc_user_email="admin@sentry.io",
-            ),
-        ]
+    roles = [
+        Role(app_id=app_map["revenue-analysis"].id, name="Admin", description="Full access"),
+        Role(app_id=app_map["revenue-analysis"].id, name="Editor", description="Edit dashboards"),
+        Role(app_id=app_map["revenue-analysis"].id, name="Analyst", description="View reports"),
+        Role(app_id=app_map["revenue-analysis"].id, name="Auditor", description="Read-only audit"),
 
-        session.add_all(apps)
-        session.commit()
+        Role(app_id=app_map["customer-insights"].id, name="Admin", description="Manage app"),
+        Role(app_id=app_map["customer-insights"].id, name="Analyst", description="Analyze data"),
+        Role(app_id=app_map["customer-insights"].id, name="Viewer", description="Read-only"),
+        Role(app_id=app_map["customer-insights"].id, name="Auditor", description="Compliance access"),
 
-        app_map = {a.slug: a for a in apps}
+        Role(app_id=app_map["design-factory"].id, name="Admin", description="Design admin"),
+        Role(app_id=app_map["design-factory"].id, name="Designer", description="Create assets"),
+        Role(app_id=app_map["design-factory"].id, name="Viewer", description="View designs"),
 
-        # ROLES 
+        Role(app_id=app_map["access-audit"].id, name="Admin", description="Audit admin"),
+        Role(app_id=app_map["access-audit"].id, name="Auditor", description="Perform audits"),
+        Role(app_id=app_map["access-audit"].id, name="Viewer", description="View logs"),
 
-        roles = [
-            # LTX
-            Role(app_id=app_map["ltx"].id, name="admin", description="Full control"),
-            Role(app_id=app_map["ltx"].id, name="analyst", description="View dashboards"),
-            Role(app_id=app_map["ltx"].id, name="experimenter", description="Run tests"),
+        Role(app_id=app_map["operations-console"].id, name="Admin", description="Ops admin"),
+        Role(app_id=app_map["operations-console"].id, name="Support", description="Handle tickets"),
+        Role(app_id=app_map["operations-console"].id, name="Viewer", description="Read-only"),
+    ]
 
-            # Pulse
-            Role(app_id=app_map["pulse"].id, name="owner", description="App owner"),
-            Role(app_id=app_map["pulse"].id, name="viewer", description="Read-only"),
-            Role(app_id=app_map["pulse"].id, name="editor", description="Edit configs"),
+    session.add_all(roles)
+    session.commit()
 
-            # Nova
-            Role(app_id=app_map["nova"].id, name="admin", description="Admin access"),
-            Role(app_id=app_map["nova"].id, name="scientist", description="Model training"),
-            Role(app_id=app_map["nova"].id, name="viewer", description="View results"),
+    role_map = {(r.app_id, r.name): r for r in roles}
 
-            # Atlas
-            Role(app_id=app_map["atlas"].id, name="admin", description="Manage reports"),
-            Role(app_id=app_map["atlas"].id, name="publisher", description="Publish"),
-            Role(app_id=app_map["atlas"].id, name="viewer", description="View only"),
+    memberships = [
+        Membership("alice@corp.com", app_map["revenue-analysis"].id, role_map[(app_map["revenue-analysis"].id, "Admin")].id, "admin@sentry.io"),
+        Membership("emma@corp.com", app_map["revenue-analysis"].id, role_map[(app_map["revenue-analysis"].id, "Analyst")].id, "alice@corp.com"),
+        Membership("ivy@corp.com", app_map["revenue-analysis"].id, role_map[(app_map["revenue-analysis"].id, "Viewer")].id, "alice@corp.com"),
 
-            # Beacon
-            Role(app_id=app_map["beacon"].id, name="admin", description="Alert admin"),
-            Role(app_id=app_map["beacon"].id, name="oncall", description="On-call engineer"),
-            Role(app_id=app_map["beacon"].id, name="viewer", description="View alerts"),
-        ]
+        Membership("charlie@corp.com", app_map["customer-insights"].id, role_map[(app_map["customer-insights"].id, "Admin")].id, "admin@sentry.io"),
+        Membership("emma@corp.com", app_map["customer-insights"].id, role_map[(app_map["customer-insights"].id, "Analyst")].id, "charlie@corp.com"),
 
-        session.add_all(roles)
-        session.commit()
+        Membership("grace@corp.com", app_map["design-factory"].id, role_map[(app_map["design-factory"].id, "Admin")].id, "admin@sentry.io"),
+        Membership("charlie@corp.com", app_map["design-factory"].id, role_map[(app_map["design-factory"].id, "Viewer")].id, "grace@corp.com"),
 
-        role_map = {(r.app_id, r.name): r for r in roles}
+        Membership("david@corp.com", app_map["access-audit"].id, role_map[(app_map["access-audit"].id, "Admin")].id, "admin@sentry.io"),
+        Membership("frank@corp.com", app_map["access-audit"].id, role_map[(app_map["access-audit"].id, "Auditor")].id, "david@corp.com"),
 
-        # MEMBERSHIPS 
+        Membership("bob@corp.com", app_map["operations-console"].id, role_map[(app_map["operations-console"].id, "Admin")].id, "admin@sentry.io"),
+        Membership("henry@corp.com", app_map["operations-console"].id, role_map[(app_map["operations-console"].id, "Support")].id, "bob@corp.com"),
+    ]
 
-        memberships = [
-            # LTX
-            Membership(
-                user_email="alice@corp.com",
-                app_id=app_map["ltx"].id,
-                role_id=role_map[(app_map["ltx"].id, "analyst")].id,
-                created_by="admin@sentry.io",
-            ),
-            Membership(
-                user_email="bob@corp.com",
-                app_id=app_map["ltx"].id,
-                role_id=role_map[(app_map["ltx"].id, "experimenter")].id,
-                created_by="admin@sentry.io",
-            ),
+    session.add_all(memberships)
+    session.commit()
 
-            # Pulse
-            Membership(
-                user_email="charlie@corp.com",
-                app_id=app_map["pulse"].id,
-                role_id=role_map[(app_map["pulse"].id, "editor")].id,
-                created_by="alice@corp.com",
-            ),
-            Membership(
-                user_email="emma@corp.com",
-                app_id=app_map["pulse"].id,
-                role_id=role_map[(app_map["pulse"].id, "viewer")].id,
-                created_by="alice@corp.com",
-            ),
+    requests = [
+        Request(
+            user_email="frank@corp.com",
+            app_id=app_map["revenue-analysis"].id,
+            role_id=role_map[(app_map["revenue-analysis"].id, "Auditor")].id,
+            justification="Quarterly finance audit",
+        ),
+        Request(
+            user_email="grace@corp.com",
+            app_id=app_map["customer-insights"].id,
+            role_id=role_map[(app_map["customer-insights"].id, "Viewer")].id,
+            justification="Design review collaboration",
+        ),
+        Request(
+            user_email="emma@corp.com",
+            app_id=app_map["operations-console"].id,
+            role_id=role_map[(app_map["operations-console"].id, "Viewer")].id,
+            status="approved",
+            updated_by="bob@corp.com",
+            updated_at=datetime.utcnow() - timedelta(days=1),
+        ),
+        Request(
+            user_email="ivy@corp.com",
+            app_id=app_map["design-factory"].id,
+            role_id=role_map[(app_map["design-factory"].id, "Designer")].id,
+            status="rejected",
+            updated_by="grace@corp.com",
+            updated_at=datetime.utcnow() - timedelta(days=2),
+        ),
+    ]
 
-            # Nova
-            Membership(
-                user_email="frank@corp.com",
-                app_id=app_map["nova"].id,
-                role_id=role_map[(app_map["nova"].id, "scientist")].id,
-                created_by="bob@corp.com",
-            ),
-
-            # Atlas
-            Membership(
-                user_email="grace@corp.com",
-                app_id=app_map["atlas"].id,
-                role_id=role_map[(app_map["atlas"].id, "viewer")].id,
-                created_by="charlie@corp.com",
-            ),
-
-            # Beacon
-            Membership(
-                user_email="henry@corp.com",
-                app_id=app_map["beacon"].id,
-                role_id=role_map[(app_map["beacon"].id, "oncall")].id,
-                created_by="admin@sentry.io",
-            ),
-        ]
-
-        session.add_all(memberships)
-        session.commit()
-
-        # REQUESTS 
-
-        requests = [
-            # Pending
-            Request(
-                user_email=user_map["ivy@corp.com"].email,
-                app_id=app_map["ltx"].id,
-                role_id=role_map[(app_map["ltx"].id, "analyst")].id,
-                justification="Need access for reporting",
-            ),
-
-            # Approved
-            Request(
-                user_email=user_map["david@corp.com"].email,
-                app_id=app_map["pulse"].id,
-                role_id=role_map[(app_map["pulse"].id, "viewer")].id,
-                status="approved",
-                updated_by="alice@corp.com",
-                updated_at=datetime.utcnow() - timedelta(days=1),
-            ),
-
-            # Rejected
-            Request(
-                user_email=user_map["emma@corp.com"].email,
-                app_id=app_map["nova"].id,
-                role_id=role_map[(app_map["nova"].id, "admin")].id,
-                status="rejected",
-                updated_by="bob@corp.com",
-                updated_at=datetime.utcnow() - timedelta(days=2),
-            ),
-
-            # Another pending
-            Request(
-                user_email=user_map["frank@corp.com"].email,
-                app_id=app_map["atlas"].id,
-                role_id=role_map[(app_map["atlas"].id, "publisher")].id,
-                justification="Publishing reports",
-            ),
-        ]
-
-        session.add_all(requests)
-        session.commit()
-
-
-if __name__ == "__main__":
-    seed()
+    session.add_all(requests)
+    session.commit()
