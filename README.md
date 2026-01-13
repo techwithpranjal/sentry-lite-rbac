@@ -5,6 +5,33 @@ A lightweight, production-inspired Role-Based Access Control (RBAC) system built
 This project is intentionally designed as a realistic internal tool, not a toy CRUD app. It mirrors how RBAC actually works inside SaaS companies.
 
 
+## Live Demo
+
+- **Frontend (GitHub Pages)**  
+  https://techwithpranjal.github.io/sentry-lite-rbac/
+
+- **Backend API (Railway)**  
+  https://sentry-lite-rbac-production.up.railway.app
+
+> The frontend is deployed using hash-based routing on GitHub Pages.  
+> The backend is deployed on Railway with JWT-based authentication.
+
+
+### Demo Login Credentials
+
+**Super Admin**
+- Email: `admin@sentry.io`
+- Password: `admin123`
+
+**Standard Users**
+- Email: `alice@corp.com`
+- Email: `bob@corp.com`
+- Email: `charlie@corp.com`
+- Password (all users): `password`
+
+> The super admin has access to the Admin Dashboard and global system controls.
+
+
 ## Overview
 
 Sentry Lite RBAC answers one core question:
@@ -150,11 +177,6 @@ All protected routes are wrapped by AuthenticatedLayoutComponent.
 - henry@corp.com
 - ivy@corp.com
 
-Password for all non-admin users:
-
-```
-password
-```
 
 ### Demo Applications
 - Revenue Analysis
@@ -180,6 +202,34 @@ The admin section provides:
 - Pending access requests
 - Role and membership visibility
 - Operational metrics
+
+## End-to-End Workflow
+
+1. User registers or logs in
+2. User views available applications
+3. User browses roles within an application
+4. User submits an access request with justification
+5. Request appears as `pending`
+6. Admin or App Owner reviews the request
+7. Request is approved or rejected
+8. On approval, a membership is created
+9. User gains access to the role
+
+This mirrors real-world RBAC flows used in internal enterprise tools.
+
+## Screenshots
+
+> Screenshots are intentionally listed in workflow order.
+
+- Login & Authentication
+- Dashboard Overview
+- Applications List
+- Roles per Application
+- Members per Role
+- Access Requests
+- Admin Overview Dashboard
+
+Screenshots will be added to the `/screenshots` directory.
 
 
 ## Local Development Setup
@@ -242,13 +292,6 @@ This project was built to:
 - Mirror internal enterprise tooling
 - Act as a strong portfolio artifact
 
-
-## Future Improvements
-- Refresh token flow
-- Audit trails
-- Role inheritance
-- Fine-grained permissions
-- SSO integration
 
 
 ## License
