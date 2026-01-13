@@ -15,7 +15,7 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/auth/login`, payload).pipe(
       tap((res) => {
         if (res?.access_token) {
-          localStorage.setItem(this.TOKEN_KEY, res.access_token);
+          sessionStorage.setItem(this.TOKEN_KEY, res.access_token);
         }
       })
     );
@@ -26,11 +26,11 @@ export class AuthService {
   }
 
   getToken() {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   logout() {
-    localStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.TOKEN_KEY);
   }
 
   isAuthenticated(): boolean {

@@ -11,7 +11,7 @@ export class AdminService {
   getOverview() {
     return this.http.get<any>(`${this.baseUrl}/overview`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`
       }
     });
   }
@@ -19,7 +19,7 @@ export class AdminService {
   getAdminApps() {
     return this.http.get<any>(`${this.baseUrl}/apps`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`
       }
     });
   }
@@ -27,7 +27,7 @@ export class AdminService {
   getAdminRoles() {
     return this.http.get<any>(`${this.baseUrl}/roles`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`
       }
     });
   }
@@ -35,7 +35,7 @@ export class AdminService {
   getAdminRequests() {
     return this.http.get<any>(`${this.baseUrl}/requests`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`
       }
     });
   }
@@ -43,7 +43,7 @@ export class AdminService {
   getAdminMemberships() {
     return this.http.get<any>(`${this.baseUrl}/memberships`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`
       }
     });
   }

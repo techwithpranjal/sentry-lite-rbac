@@ -12,7 +12,7 @@ export class RolesService {
       `${environment.apiBaseUrl}/roles?app_id=${appId}`,
       {
         headers: new HttpHeaders({
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
         }),
       }
     );
@@ -32,7 +32,7 @@ export class RolesService {
       },
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
         },
       }
     );

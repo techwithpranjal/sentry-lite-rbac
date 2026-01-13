@@ -12,7 +12,7 @@ export class MembersService {
       `${environment.apiBaseUrl}/memberships?role_id=${roleId}`,
       {
         headers: new HttpHeaders({
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
         }),
       }
     );
@@ -25,7 +25,7 @@ export class MembersService {
   }) {
     return this.http.post<any>(`${environment.apiBaseUrl}/memberships`, payload, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
       }
     });
   }
@@ -33,7 +33,7 @@ export class MembersService {
   deleteMember(membershipId: number) {
     return this.http.delete<any>(`${environment.apiBaseUrl}/memberships?membership_id=${membershipId}`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
       }
     });
   }

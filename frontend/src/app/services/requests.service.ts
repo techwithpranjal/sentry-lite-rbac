@@ -12,7 +12,7 @@ export class RequestsService {
   getMyRequests(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/requests/me`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
       },
     });
   }
@@ -20,7 +20,7 @@ export class RequestsService {
   createRequest(payload: { app_id: number; role_id: number; justification: string }) {
     return this.http.post<any>(`${this.apiUrl}/requests`, payload, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
       },
     });
   }
@@ -31,7 +31,7 @@ export class RequestsService {
       { request_id: requestId, status: status },
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
         },
       }
     );
@@ -40,7 +40,7 @@ export class RequestsService {
   getMyApprovals() {
     return this.http.get<any[]>(`${this.apiUrl}/requests/approvals`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
       },
     });
   }

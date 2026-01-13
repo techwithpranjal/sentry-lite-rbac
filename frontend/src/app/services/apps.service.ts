@@ -20,7 +20,7 @@ export class AppsService {
   }) {
     return this.http.post<any>(`${this.apiUrl}/apps`, payload, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
       }
     });
   }
