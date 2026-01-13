@@ -41,7 +41,7 @@ def seed(session: Session):
             name="Revenue Analysis",
             slug="revenue-analysis",
             description="Revenue dashboards and forecasting",
-            poc_user_email="alice@corp.com",
+            poc_user_email="admin@sentry.io",
         ),
         App(
             name="Customer Insights",
@@ -65,7 +65,7 @@ def seed(session: Session):
             name="Operations Console",
             slug="operations-console",
             description="Internal operations and support tooling",
-            poc_user_email="bob@corp.com",
+            poc_user_email="admin@sentry.io",
         ),
     ]
 
