@@ -13,7 +13,7 @@ This project is intentionally designed as a realistic internal tool, not a toy C
 - **Backend API (Railway)**  
   https://sentry-lite-rbac-production.up.railway.app
 
-- **Swagger Docs**
+- **Swagger Docs **
   https://sentry-lite-rbac-production.up.railway.app/docs#/
 
 > The frontend is deployed using hash-based routing on GitHub Pages.  
