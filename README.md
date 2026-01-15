@@ -236,55 +236,55 @@ This mirrors real-world RBAC flows used in internal enterprise tools.
   
 - Dashboard Overview
 
-![Login page.](/frontend/assets/asset3.png)
+![Dashboard page.](/frontend/assets/asset3.png)
 
 - My Applications List
 
-![Login page.](/frontend/assets/asset4.png)
+![My Apps page.](/frontend/assets/asset4.png)
 
 - All Applications List
 
-![Login page.](/frontend/assets/asset5.png)
+![All Apps page.](/frontend/assets/asset5.png)
 
 - Roles per Application
 
-![Login page.](/frontend/assets/asset6.png)
+![Roles page.](/frontend/assets/asset6.png)
 
 - Members per Role
 
-![Login page.](/frontend/assets/asset7.png)
+![Members page.](/frontend/assets/asset7.png)
 
 - Access Requests 
 
-![Login page.](/frontend/assets/asset8.png)
+![Requests page.](/frontend/assets/asset8.png)
 
 - Approvals
 
-![Login page.](/frontend/assets/asset9.png)
+![Approvals page.](/frontend/assets/asset9.png)
 
 - Memberships
 
-![Login page.](/frontend/assets/asset10.png)
+![Memberships page.](/frontend/assets/asset10.png)
 
 - Admin Overview Dashboard
 
-![Login page.](/frontend/assets/asset11.png)
+![Admin Overview page.](/frontend/assets/asset11.png)
 
 - Admin View Applications
   
-![Login page.](/frontend/assets/asset12.png)
+![Admin Apps page.](/frontend/assets/asset12.png)
 
 - Admin View Roles
 
-![Login page.](/frontend/assets/asset13.png)
+![Admin Roles page.](/frontend/assets/asset13.png)
 
 - Admin View Requests
 
-![Login page.](/frontend/assets/asset14.png)
+![Admin Requests page.](/frontend/assets/asset14.png)
 
 - Admin View Memberships
 
-![Login page.](/frontend/assets/asset15.png)
+![Admin Memberships page.](/frontend/assets/asset15.png)
 
 
 
