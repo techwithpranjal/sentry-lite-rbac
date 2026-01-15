@@ -229,15 +229,63 @@ This mirrors real-world RBAC flows used in internal enterprise tools.
 - Login & Authentication
 
 ![Login page.](/frontend/assets/asset1.png)
+
+- Register New User
+
+![Register page.](/frontend/assets/asset2.png)
   
 - Dashboard Overview
-- Applications List
+
+![Login page.](/frontend/assets/asset3.png)
+
+- My Applications List
+
+![Login page.](/frontend/assets/asset4.png)
+
+- All Applications List
+
+![Login page.](/frontend/assets/asset5.png)
+
 - Roles per Application
+
+![Login page.](/frontend/assets/asset6.png)
+
 - Members per Role
-- Access Requests
+
+![Login page.](/frontend/assets/asset7.png)
+
+- Access Requests 
+
+![Login page.](/frontend/assets/asset8.png)
+
+- Approvals
+
+![Login page.](/frontend/assets/asset9.png)
+
+- Memberships
+
+![Login page.](/frontend/assets/asset10.png)
+
 - Admin Overview Dashboard
 
-Screenshots will be added to the `/screenshots` directory.
+![Login page.](/frontend/assets/asset11.png)
+
+- Admin View Applications
+  
+![Login page.](/frontend/assets/asset12.png)
+
+- Admin View Roles
+
+![Login page.](/frontend/assets/asset13.png)
+
+- Admin View Requests
+
+![Login page.](/frontend/assets/asset14.png)
+
+- Admin View Memberships
+
+![Login page.](/frontend/assets/asset15.png)
+
 
 
 ## Local Development Setup
