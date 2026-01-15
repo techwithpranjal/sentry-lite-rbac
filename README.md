@@ -13,8 +13,13 @@ This project is intentionally designed as a realistic internal tool, not a toy C
 - **Backend API (Railway)**  
   https://sentry-lite-rbac-production.up.railway.app
 
+- **Swagger Docs**
+  https://sentry-lite-rbac-production.up.railway.app/docs#/
+
 > The frontend is deployed using hash-based routing on GitHub Pages.  
 > The backend is deployed on Railway with JWT-based authentication.
+
+
 
 
 ### Demo Login Credentials
@@ -222,6 +227,9 @@ This mirrors real-world RBAC flows used in internal enterprise tools.
 > Screenshots are intentionally listed in workflow order.
 
 - Login & Authentication
+
+![Login page.](/frontend/assets/asset1.png)
+  
 - Dashboard Overview
 - Applications List
 - Roles per Application
@@ -293,10 +301,3 @@ This project was built to:
 - Act as a strong portfolio artifact
 
 
-
-## License
-
-MIT License
-
-
-Built with intention, not shortcuts.
