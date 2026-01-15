@@ -227,6 +227,9 @@ This mirrors real-world RBAC flows used in internal enterprise tools.
 > Screenshots are intentionally listed in workflow order.
 
 - Login & Authentication
+
+![Login page.](/frontend/assets/asset1.png)
+  
 - Dashboard Overview
 - Applications List
 - Roles per Application
