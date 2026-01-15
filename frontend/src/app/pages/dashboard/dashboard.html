@@ -69,10 +69,10 @@
             *ngFor="let m of identity.memberships"
             class="flex justify-between items-center text-sm"
           >
-            <span class="text-zinc-300"> App {{ m.app_id }} </span>
+            <span class="text-zinc-300"> App {{ m.app_name }} </span>
 
             <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-400 text-xs">
-              Role {{ m.role_id }}
+              Role {{ m.role_name }}
             </span>
           </li>
         </ul>
@@ -102,10 +102,10 @@
 
       <!-- Requests -->
       <div class="bg-zinc-900 border border-zinc-800 rounded-lg p-5">
-        <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">Pending requests</h2>
+        <h2 class="text-sm uppercase text-zinc-400 tracking-wide mb-4">My requests</h2>
 
         <div *ngIf="identity.requests?.length === 0" class="text-zinc-500">
-          No pending requests found
+          No requests found
         </div>
 
         <ul class="space-y-2">

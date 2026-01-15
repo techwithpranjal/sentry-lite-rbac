@@ -8,6 +8,7 @@ export class AuthService {
   private apiUrl = environment.apiBaseUrl;
   private TOKEN_KEY = 'access_token';
   private _isAdmin = false;
+  private _userEmail = '';
 
   constructor(private http: HttpClient) {}
 
@@ -46,12 +47,17 @@ export class AuthService {
       })
       .pipe(
         tap((res) => {
-          this._isAdmin = !!res.user?.is_admin;
+          this._isAdmin = !!res.user?.is_super_admin;
+          this._userEmail = res.user?.email || '';
         })
       );
   }
 
   isAdmin() {
     return this._isAdmin;
+  }
+
+  getUserEmail() {
+    return this._userEmail;
   }
 }

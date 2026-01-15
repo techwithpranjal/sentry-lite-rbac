@@ -46,8 +46,8 @@
             <th class="px-4 py-3 text-zinc-400">Role</th>
             <th class="px-4 py-3 text-zinc-400">Justification</th>
             <th class="px-4 py-3 text-zinc-400">Status</th>
-            <th class="px-4 py-3 text-zinc-400">Requested</th>
-            <th class="px-4 py-3 text-zinc-400">Updated</th>
+            <th class="px-4 py-3 text-zinc-400">Requested On</th>
+            <th class="px-4 py-3 text-zinc-400">Updated On</th>
             <th class="px-4 py-3 text-zinc-400">Updated By</th>
           </tr>
         </thead>
@@ -75,10 +75,10 @@
               </span>
             </td>
             <td class="px-4 py-3 text-zinc-500">
-              {{ r.created_at }}
+              {{ r.created_at | date : 'mediumDate' }}
             </td>
             <td class="px-4 py-3 text-zinc-500">
-              {{ r.updated_at }}
+              {{ r.updated_at | date : 'mediumDate' }}
             </td>
             <td class="px-4 py-3 text-zinc-500">
               {{ r.updated_by }}
@@ -107,7 +107,7 @@
             <th class="px-4 py-3 text-zinc-400">Application</th>
             <th class="px-4 py-3 text-zinc-400">Role</th>
             <th class="px-4 py-3 text-zinc-400">Justification</th>
-            <th class="px-4 py-3 text-zinc-400">Requested</th>
+            <th class="px-4 py-3 text-zinc-400">Requested On</th>
             <th class="px-4 py-3 text-zinc-400 text-right">Actions</th>
           </tr>
         </thead>

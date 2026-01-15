@@ -7,8 +7,11 @@
       </div>
 
       <!-- Auth Status -->
-      <div class="text-sm text-zinc-400">
-        {{ authService.isAuthenticated() ? 'authenticated' : 'unauthenticated' }}
+      <div class="text-sm text-zinc-400" *ngIf="authService.getUserEmail() as user">
+        {{ user }}
+        <span *ngIf="authService.isAdmin() as admin" class="ml-1 text-xs text-amber-400">
+          {{ admin ? '(admin)' : '' }}
+        </span>
       </div>
     </div>
   </header>
