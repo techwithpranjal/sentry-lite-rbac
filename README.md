@@ -1,351 +1,229 @@
-# Sentry Lite RBAC
+# DesignLint – UI Design Scoring Browser Extension
 
-A lightweight, production-inspired Role-Based Access Control (RBAC) system built to demonstrate how modern teams manage applications, roles, memberships, and access requests at scale.
+DesignLint is a lightweight browser extension that analyzes any webpage for **design quality signals** such as accessibility, readability, layout density, and visual hierarchy — and presents the results in a clean, developer-friendly interface.
 
-This project is intentionally designed as a realistic internal tool, not a toy CRUD app. It mirrors how RBAC actually works inside SaaS companies.
-
-
-## Live Demo
-
-- **Frontend (GitHub Pages)**  
-  https://techwithpranjal.github.io/sentry-lite-rbac/
-
-- **Backend API (Railway)**  
-  https://sentry-lite-rbac-production.up.railway.app
-
-- **Swagger Docs**
-  https://sentry-lite-rbac-production.up.railway.app/docs#/
-
-> The frontend is deployed using hash-based routing on GitHub Pages.  
-> The backend is deployed on Railway with JWT-based authentication.
+This project is intentionally built as a **design-linting demo**, not a production SaaS.  
+Its purpose is to demonstrate **browser extension architecture, DOM analysis, UX reasoning, and frontend systems thinking**.
 
 
 
+## Why DesignLint Exists
 
-### Demo Login Credentials
+Most UI issues are not visual bugs — they are **structural, cognitive, or accessibility problems**.
 
-**Super Admin**
-- Email: `admin@sentry.io`
-- Password: `admin123`
+DesignLint answers one simple question:
 
-**Standard Users**
-- Email: `alice@corp.com`
-- Email: `bob@corp.com`
-- Email: `charlie@corp.com`
-- Password (all users): `password`
+> *“Is this page usable, readable, and visually structured — and why?”*
 
-> The super admin has access to the Admin Dashboard and global system controls.
-
-
-## Overview
-
-Sentry Lite RBAC answers one core question:
-
-Who can access what, and why?
-
-The system allows:
-- Users to authenticate
-- Applications to define roles
-- Users to be assigned roles via memberships
-- Users to request access
-- Admins to review, approve, or reject access
-
-It is split into:
-- Backend: FastAPI + SQLModel + JWT
-- Frontend: Angular (Standalone API) + Tailwind CSS
-- Database: SQLite (dev/demo, easily swappable)
-
-The project is deployed as:
-- Frontend → GitHub Pages
-- Backend → Railway
+The project was built to:
+- Explore how UI quality can be **measured heuristically**
+- Demonstrate **Chrome Extension (Manifest v3) architecture**
+- Show the intersection of **design, accessibility, and frontend engineering**
+- Serve as a **portfolio-grade systems demo**, not a toy app
 
 
-## Core Concepts (RBAC Model)
 
-### Users
-- Identified by email
-- Can be normal users or super admins
+## How DesignLint Works
 
-### Applications
-- Logical internal tools (e.g. Revenue Analysis, Design Factory)
-- Each application has a point-of-contact (POC)
+When you start a scan on the current tab, DesignLint:
 
-### Roles
-- Defined per application
-- Examples:
-  - Admin
-  - Analyst
-  - Editor
-  - Auditor
-  - Designer
-  - Viewer
+1. Reads the live DOM of the active page
+2. Runs selected design metric analyzers
+3. Scores each metric independently
+4. Aggregates results into a unified report
+5. Allows drilling down into metric-specific details
 
-### Memberships
-- Mapping of user → application → role
-- Created by an admin or application owner
-
-### Requests
-- Users can request access to a role in an application
-- Requests follow a lifecycle:
-  - pending
-  - approved
-  - rejected
-
-This structure closely matches how tools like Okta, AWS IAM, and internal enterprise RBAC systems work.
+All analysis runs **locally inside the browser**.  
+No data is sent to any backend or external service.
 
 
-## Database Design
 
-The database uses SQLModel (SQLAlchemy + Pydantic).
+## Metrics Explained
 
-### Tables
-- user
-- app
-- role
-- membership
-- request
-
-### Key Relationships
-- app.poc_user_email → user.email
-- role.app_id → app.id
-- membership.user_email → user.email
-- membership.role_id → role.id
-- request.role_id → role.id
-
-Foreign keys are intentionally explicit to surface real-world constraints.
+DesignLint treats design quality as **four distinct dimensions**.  
+Each metric answers a different usability question and is backed by concrete, inspectable signals.
 
 
-## Backend Architecture
 
-### Technology Stack
-- FastAPI
-- SQLModel
-- JWT authentication (python-jose)
-- Passlib + bcrypt for password hashing
+### 1. Accessibility  
+**Can people with different abilities use this page?**
 
-### Authentication Flow
-1. User logs in with email and password
-2. Backend validates credentials
-3. JWT access token is issued
-4. Token is sent via Authorization header
-5. Protected routes validate the token
+Accessibility measures whether a page is usable by screen reader users, keyboard users, and people with visual or cognitive impairments.  
+This metric focuses on **standards compliance and semantic correctness**, not visual styling.
 
-### Backend Design
-- Router-based separation (auth, apps, roles, memberships, requests, admin)
-- Dependency-based authentication
-- Explicit read/write schemas
-- Deterministic seed data for demos
+**What this metric represents**
+- Whether the page follows accessibility best practices
+- Whether assistive technologies can interpret the structure correctly
+- Whether critical barriers exist for disabled users
 
+**Sub-metrics analyzed**
+- Semantic HTML usage
+- ARIA roles and labels
+- WCAG violations detected via automated rules
+- Severity distribution of issues
 
-## Frontend Architecture
-
-### Technology Stack
-- Angular (Standalone API)
-- Angular Router (hash-based routing)
-- Tailwind CSS
-- TypeScript
-
-### Routing
-- Public routes:
-  - /login
-  - /register
-- Protected routes:
-  - /dashboard
-  - /apps
-  - /roles
-  - /members
-  - /access
-  - /admin
-
-All protected routes are wrapped by AuthenticatedLayoutComponent.
-
-### Guards
-- CanActivateChild guard protects authenticated routes
-- Unauthenticated users are redirected to login
-
-### State Management
-- JWT stored in browser storage
-- AuthService acts as the single source of truth
+**Output**
+- Accessibility score (0–100)
+- Total issue count
+- Severity breakdown (critical, serious, moderate, minor)
+- Top accessibility issues detected
 
 
-## Demo Seed Data
 
-### Demo Users
-- admin@sentry.io (super admin)
-- alice@corp.com
-- bob@corp.com
-- charlie@corp.com
-- david@corp.com
-- emma@corp.com
-- frank@corp.com
-- grace@corp.com
-- henry@corp.com
-- ivy@corp.com
+### 2. Readability  
+**How easy is the content to read and mentally process?**
 
+Readability evaluates the **cognitive effort required to consume the text** on a page.  
+It focuses on structure and density, not grammar or tone.
 
-### Demo Applications
-- Revenue Analysis
-- Customer Insights
-- Design Factory
-- Access Audit Tool
-- Operations Console
+**What this metric represents**
+- How quickly users can understand the content
+- Whether text blocks feel overwhelming
+- Whether sentence and paragraph structure supports scanning
 
-### Example Roles
-- Admin
-- Analyst
-- Editor
-- Auditor
-- Designer
-- Support
-- Viewer
+**Sub-metrics analyzed**
+- Flesch Reading Ease score
+- Average sentence length
+- Average paragraph length
+- Number of overly long paragraphs
+- Reading difficulty classification
+
+**Output**
+- Readability score (0–100)
+- Difficulty level (Easy / Standard / Hard)
+- Text structure statistics
+- Key readability findings
 
 
-## Admin Dashboard
 
-The admin section provides:
-- System-wide statistics
-- Pending access requests
-- Role and membership visibility
-- Operational metrics
+### 3. Layout Density  
+**How organized and scannable is the page structure?**
 
-## End-to-End Workflow
+Layout Density measures how content is **distributed spatially**.  
+It evaluates structure and spacing, not visual aesthetics.
 
-1. User registers or logs in
-2. User views available applications
-3. User browses roles within an application
-4. User submits an access request with justification
-5. Request appears as `pending`
-6. Admin or App Owner reviews the request
-7. Request is approved or rejected
-8. On approval, a membership is created
-9. User gains access to the role
+**What this metric represents**
+- Whether the page feels balanced or crowded
+- Whether sections are clearly separated
+- Whether structural complexity increases cognitive load
 
-This mirrors real-world RBAC flows used in internal enterprise tools.
+**Sub-metrics analyzed**
+- Visible section count
+- Vertical spacing between elements
+- Average and maximum DOM nesting depth
+- Structural density classification
+
+**Output**
+- Layout density score
+- Structural metrics
+- Contextual layout assessment findings
+
+
+
+### 4. Visual Hierarchy  
+**What stands out at a glance?**
+
+Visual Hierarchy evaluates whether the page clearly communicates **what matters most** when users first look at it.
+
+**What this metric represents**
+- Whether attention is guided intentionally
+- Whether multiple elements compete for focus
+- Whether calls-to-action stand out appropriately
+
+**Sub-metrics analyzed**
+- Font size and weight contrast
+- Heading scale variance
+- Primary focus competition
+- Call-to-action prominence
+
+**Output**
+- Visual hierarchy score
+- Emphasis and contrast metrics
+- Visual hierarchy findings explaining attention conflicts
+
+
 
 ## Screenshots
 
-> Screenshots are intentionally listed in workflow order.
+> Screenshots are listed in the same order as the user workflow.
 
-- Login & Authentication
+### 1. Empty state (no scans yet)
+![Empty state](/extension/src/assets/asset1.png)
 
-![Login page.](/frontend/assets/asset1.png)
+### 2. New scan – metric selection
+![Metric selection](/extension/src/assets/asset2.png)
 
-- Register New User
+### 3. Scan in progress (loading state)
+![Loading state](/extension/src/assets/asset3.png)
 
-![Register page.](/frontend/assets/asset2.png)
-  
-- Dashboard Overview
+### 4. Results overview
+![Results overview](/extension/src/assets/asset4.png)
 
-![Dashboard page.](/frontend/assets/asset3.png)
+### 5. Accessibility – detailed view
+![Accessibility details](/extension/src/assets/asset5.png)
 
-- My Applications List
+### 6. Readability – detailed view
+![Readability details](/extension/src/assets/asset6.png)
 
-![My Apps page.](/frontend/assets/asset4.png)
+### 7. Layout density – detailed view
+![Layout density details](/extension/src/assets/asset7.png)
 
-- All Applications List
-
-![All Apps page.](/frontend/assets/asset5.png)
-
-- Roles per Application
-
-![Roles page.](/frontend/assets/asset6.png)
-
-- Members per Role
-
-![Members page.](/frontend/assets/asset7.png)
-
-- Access Requests 
-
-![Requests page.](/frontend/assets/asset8.png)
-
-- Approvals
-
-![Approvals page.](/frontend/assets/asset9.png)
-
-- Memberships
-
-![Memberships page.](/frontend/assets/asset10.png)
-
-- Admin Overview Dashboard
-
-![Admin Overview page.](/frontend/assets/asset11.png)
-
-- Admin View Applications
-  
-![Admin Apps page.](/frontend/assets/asset12.png)
-
-- Admin View Roles
-
-![Admin Roles page.](/frontend/assets/asset13.png)
-
-- Admin View Requests
-
-![Admin Requests page.](/frontend/assets/asset14.png)
-
-- Admin View Memberships
-
-![Admin Memberships page.](/frontend/assets/asset15.png)
+### 8. Visual hierarchy – detailed view
+![Visual hierarchy details](/extension/src/assets/asset8.png)
 
 
 
-## Local Development Setup
+## Tech Stack
 
-### Prerequisites
-- Node.js 18+
-- Python 3.11+
-- Git
+### Frontend
+- TypeScript
+- React
+- Vite
+- Tailwind CSS
 
-### Clone Repository
-```
-git clone https://github.com/techwithpranjal/sentry-lite-rbac.git
-cd sentry-lite-rbac
-```
+### Browser APIs
+- Chrome Extension (Manifest v3)
+- Content scripts
+- Background service worker
+- Message passing
+- `chrome.storage.local`
 
-### Backend Setup
-```
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
+### Analysis Libraries
+- axe-core (accessibility analysis)
 
-Backend runs at:
-http://localhost:8000
 
-### Frontend Setup
-```
-cd frontend
+
+## Who This Is For
+
+- Frontend engineers
+- UI / UX designers
+- Accessibility advocates
+- QA engineers
+- Product teams
+- Recruiters reviewing frontend systems and architecture work
+
+
+
+## Installation (Demo)
+
+DesignLint is provided as an **unpacked demo extension**.
+
+Download the latest build from GitHub Releases:  
+👉 https://github.com/techwithpranjal/design-lint/releases
+
+### Install (Chrome / Edge / Chromium)
+
+1. Open `chrome://extensions`
+2. Enable **Developer mode**
+3. Click **Load unpacked**
+4. Select the extracted build folder
+
+
+
+## Local Development
+
+```bash
+git clone https://github.com/techwithpranjal/design-lint
+cd design-lint/extension
 npm install
-ng serve
-```
-
-Frontend runs at:
-http://localhost:4200
-
-
-## Deployment
-
-### Frontend (GitHub Pages)
-- Hash-based routing
-- Environment-specific base href
-- Production build:
-```
-ng build --configuration production
-```
-
-### Backend (Railway)
-- Docker-based deployment
-- SQLite for demo
-- Environment variables for JWT configuration
-
-
-## Why This Project Exists
-
-This project was built to:
-- Demonstrate real RBAC modeling
-- Show full-stack architectural thinking
-- Mirror internal enterprise tooling
-- Act as a strong portfolio artifact
-
-
+npm run build
